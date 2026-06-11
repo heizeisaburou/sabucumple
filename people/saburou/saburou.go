@@ -53,6 +53,7 @@ var thanks = []Person{
 		Image:   "kagliostro.png",
 		Message: "Gracias por esforzarte tanto por hacerme un regalo y por ser mi amigo tantos años ya! Algún espero que nos encontremos en tierras argentinas.",
 		URL:     "https://github.com/ginobadhouse",
+		Endpoint: "/kagliostro/",
 		Active:  true,
 	},
 	{
