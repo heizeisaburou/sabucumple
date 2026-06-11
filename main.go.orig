@@ -11,14 +11,31 @@ import (
 	"github.com/heizeisaburou/sabucumple/module"
 	"github.com/heizeisaburou/sabucumple/people/chavsi"
 	"github.com/heizeisaburou/sabucumple/people/ejemplo"
-	"github.com/heizeisaburou/sabucumple/people/leinSeab"
 	"github.com/heizeisaburou/sabucumple/people/midos"
 	"github.com/heizeisaburou/sabucumple/people/saburou"
 	"github.com/heizeisaburou/sabucumple/people/savage"
+<<<<<<< ours
 )
 
 func main() {
 	e := echo.New()
+=======
+	"github.com/heizeisaburou/sabucumple/people/chavsi"
+	"github.com/heizeisaburou/sabucumple/people/leinSeab"
+)
+
+func main() {
+  e := echo.New()
+
+  modules := []module.Module{
+    ejemplo.New(),
+    midos.New(),
+    savage.New(),
+    chavsi.New(),
+	leinSeab.New(),
+  }
+
+>>>>>>> theirs
 
 	modules := []module.Module{
 		ejemplo.New(),
@@ -26,7 +43,6 @@ func main() {
 		savage.New(),
 		chavsi.New(),
 		saburou.New(),
-		leinSeab.New(),
 	}
 
 	e.GET("/", func(c *echo.Context) error {
@@ -55,8 +71,14 @@ func main() {
 
 	e.Static("/static", "static")
 
+<<<<<<< ours
 	fmt.Println("Servidor escuchando en http://localhost:8080")
 	if err := e.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
 }
+=======
+  fmt.Println("Servidor escuchando en http://localhost:8080")
+  e.Start(":8080")
+}
+>>>>>>> theirs

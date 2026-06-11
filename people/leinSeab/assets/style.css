@@ -1,0 +1,320 @@
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #050510;
+  font-family: system-ui, -apple-system, sans-serif;
+  user-select: none;
+}
+
+canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Panel de Configuración de Sonido */
+.sound-config {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(10, 10, 25, 0.85);
+  border: 1px solid rgba(255, 42, 116, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  color: #fff;
+  z-index: 10;
+  font-size: 0.85rem;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  width: 220px;
+  pointer-events: auto;
+}
+
+.sound-config h3 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: #ff2a74;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 42, 116, 0.2);
+  padding-bottom: 6px;
+}
+
+.config-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.config-row:last-child {
+  margin-bottom: 0;
+}
+
+.config-row label {
+  color: #a0aec0;
+}
+
+.config-row input[type="range"] {
+  width: 90px;
+  accent-color: #ff2a74;
+  cursor: pointer;
+}
+
+.config-row select {
+  background: #121225;
+  border: 1px solid rgba(255, 42, 116, 0.4);
+  color: #fff;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Toggle Switch para Silenciar */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #121225;
+  transition: 0.25s;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 42, 116, 0.3);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #a0aec0;
+  transition: 0.25s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: rgba(255, 42, 116, 0.2);
+  border-color: #ff2a74;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+  background-color: #ff2a74;
+}
+
+/* Contenedor del Regalo Flotante */
+.gift-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.heart-box {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 42, 116, 0.3));
+  animation: heartWobble 4s ease-in-out infinite alternate;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.heart-svg {
+  width: 100%;
+  height: 100%;
+  transition: filter 0.3s ease;
+}
+
+@keyframes heartWobble {
+  0% { transform: translateY(5px) rotate(-3deg); }
+  100% { transform: translateY(-5px) rotate(3deg); }
+}
+
+.heart-box.happy {
+  animation: heartbeat 0.8s infinite alternate cubic-bezier(0.215, 0.610, 0.355, 1);
+  filter: drop-shadow(0 0 25px rgba(255, 42, 116, 0.8));
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.18); }
+}
+
+.gift-hint {
+  margin-top: 25px;
+  color: #fff;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: pulseText 1.5s infinite alternate;
+  text-align: center;
+}
+
+/* Interfaz de Felicitación */
+.interface {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+  text-align: center;
+  padding: 20px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+.interface.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+h1 {
+  color: #ffffff;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3),
+               0 0 20px rgba(255, 105, 180, 0.5),
+               0 0 40px rgba(0, 255, 255, 0.5);
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+p {
+  color: #a0aec0;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  margin-top: 15px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.back-btn {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  backdrop-filter: blur(3px);
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, opacity 2s ease, transform 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(-50%) scale(1.03);
+}
+
+@keyframes pulseText {
+  0% { opacity: 0.5; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1.02); }
+}
+
+/* Botón disparador del panel */
+.sound-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(10, 10, 25, 0.85);
+  border: 1px solid rgba(255, 42, 116, 0.4);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: background 0.3s, transform 0.2s, border-color 0.3s;
+  outline: none;
+}
+
+.sound-toggle-btn:hover {
+  background: rgba(255, 42, 116, 0.2);
+  border-color: #ff2a74;
+  transform: scale(1.05);
+}
+
+.sound-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Panel de Configuración de Sonido (Modificado) */
+.sound-config {
+  position: absolute;
+  top: 70px; /* Ajustado para que aparezca debajo del botón */
+  right: 20px;
+  background: rgba(10, 10, 25, 0.9);
+  border: 1px solid rgba(255, 42, 116, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  color: #fff;
+  z-index: 10;
+  font-size: 0.85rem;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  width: 220px;
+  
+  /* Oculto por defecto con transiciones */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Estado activo para mostrar el panel */
+.sound-config.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
