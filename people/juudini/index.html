@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>お誕生日おめでとう、三郎 ｜ juudini</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
+      rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --ink: #4a3b44;
+        --ink-soft: #9a8893;
+        --sakura: #e58aa6;
+        --sakura-deep: #cf6f8d;
+        --line: rgba(207, 111, 141, 0.28);
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family:
+          "Zen Kaku Gothic New",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--ink);
+        background: linear-gradient(
+          168deg,
+          #e9e3f0 0%,
+          #f4e4ea 46%,
+          #fdf2ec 100%
+        );
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* halo suave de luz */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse 72% 52% at 50% 28%,
+          rgba(255, 255, 255, 0.6),
+          transparent 70%
+        );
+        z-index: 0;
+      }
+
+      /* kanji marca de agua: 祝 (celebración) */
+      .watermark {
+        position: fixed;
+        left: 50%;
+        top: 52%;
+        transform: translate(-50%, -50%);
+        font-family: "Shippori Mincho", serif;
+        font-weight: 800;
+        font-size: min(64vh, 540px);
+        line-height: 1;
+        color: var(--sakura);
+        opacity: 0.05;
+        z-index: 0;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* texto vertical decorativo */
+      .side-accent {
+        position: fixed;
+        right: clamp(8px, 2vw, 28px);
+        top: 50%;
+        transform: translateY(-50%);
+        writing-mode: vertical-rl;
+        font-family: "Shippori Mincho", serif;
+        letter-spacing: 0.5em;
+        font-size: 14px;
+        color: var(--sakura-deep);
+        opacity: 0.3;
+        z-index: 1;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* ramas de cerezo en las esquinas */
+      .branch {
+        position: fixed;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.82;
+      }
+      .branch-left {
+        top: -12px;
+        left: -14px;
+        width: clamp(150px, 26vw, 320px);
+      }
+      .branch-right {
+        top: -12px;
+        right: -14px;
+        width: clamp(150px, 26vw, 320px);
+        transform: scaleX(-1);
+      }
+
+      /* pétalos de sakura cayendo */
+      .petals {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .petal-fall {
+        position: absolute;
+        top: 0;
+        left: 0;
+        will-change: transform;
+      }
+      .petal {
+        width: 12px;
+        height: 12px;
+        border-radius: 100% 0 100% 0;
+        background: radial-gradient(
+          circle at 32% 28%,
+          #ffe6ee 0%,
+          #f7b3c8 60%,
+          #ee93b0 100%
+        );
+        box-shadow: 0 1px 2px rgba(190, 110, 140, 0.18);
+        will-change: transform;
+      }
+
+      /* contenido */
+      main {
+        position: relative;
+        z-index: 3;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        padding: 66px 22px 36px;
+        text-align: center;
+      }
+
+      .intro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .eyebrow {
+        font-size: 12.5px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        padding-left: 0.42em;
+      }
+
+      .greeting {
+        font-family: "Shippori Mincho", serif;
+        font-weight: 600;
+        font-size: clamp(30px, 6.6vw, 58px);
+        letter-spacing: 0.06em;
+        line-height: 1.28;
+        color: var(--ink);
+      }
+      .greeting b {
+        color: var(--sakura-deep);
+        font-weight: 800;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+
+      /* botón "escuchar audio" del hero */
+      .audio-btn {
+        margin-top: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 22px 11px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-family: "Zen Kaku Gothic New", sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+        color: var(--sakura-deep);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(207, 111, 141, 0.35);
+        backdrop-filter: blur(10px) saturate(125%);
+        -webkit-backdrop-filter: blur(10px) saturate(125%);
+        box-shadow:
+          0 10px 24px -14px rgba(176, 104, 134, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .audio-btn:hover {
+        transform: translateY(-1px);
+        border-color: var(--sakura);
+        box-shadow:
+          0 14px 30px -14px rgba(176, 104, 134, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+      .audio-btn:active {
+        transform: translateY(0);
+      }
+      .audio-ico {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--sakura-deep);
+        color: #fff;
+        flex-shrink: 0;
+        padding-left: 1px;
+      }
+      .audio-ico svg {
+        display: block;
+      }
+      .audio-btn.playing .audio-ico {
+        padding-left: 0;
+      }
+      .audio-btn.playing .ico-play {
+        display: none;
+      }
+      .audio-btn:not(.playing) .ico-pause {
+        display: none;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        opacity: 0.85;
+      }
+      .divider span {
+        height: 1px;
+        width: 48px;
+        display: block;
+        background: linear-gradient(90deg, transparent, var(--sakura));
+      }
+      .divider span:last-child {
+        background: linear-gradient(90deg, var(--sakura), transparent);
+      }
+
+      /* carrusel */
+      .carousel-wrap {
+        width: min(560px, 92vw);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+      .carousel {
+        width: 100%;
+        overflow: hidden;
+        border-radius: 22px;
+      }
+      .track {
+        display: flex;
+      }
+
+      .card {
+        flex: 0 0 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* margen interno: deja sitio a la sombra para que el overflow del carrusel no la recorte */
+        padding: 24px 28px 46px;
+      }
+
+      .card-inner {
+        width: 100%;
+        min-height: 300px;
+        padding: 46px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(14px) saturate(125%);
+        -webkit-backdrop-filter: blur(14px) saturate(125%);
+        box-shadow:
+          0 16px 34px -16px rgba(176, 104, 134, 0.32),
+          0 4px 10px -6px rgba(176, 104, 134, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+      .card-inner::before,
+      .card-inner::after {
+        content: "";
+        position: absolute;
+        width: 26px;
+        height: 26px;
+      }
+      .card-inner::before {
+        top: 15px;
+        left: 15px;
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+        border-radius: 5px 0 0 0;
+      }
+      .card-inner::after {
+        bottom: 15px;
+        right: 15px;
+        border-bottom: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+        border-radius: 0 0 5px 0;
+      }
+
+      .jp {
+        font-family: "Shippori Mincho", serif;
+        font-weight: 800;
+        font-size: clamp(32px, 8.4vw, 58px);
+        letter-spacing: 0.08em;
+        line-height: 1.32;
+        color: var(--ink);
+      }
+      .romaji {
+        font-size: clamp(12px, 3.2vw, 15px);
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--sakura-deep);
+      }
+      .es {
+        font-size: clamp(14px, 3.6vw, 16.5px);
+        color: var(--ink-soft);
+        max-width: 34ch;
+        line-height: 1.7;
+      }
+
+      /* controles */
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .nav {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--sakura-deep);
+        font-size: 26px;
+        line-height: 1;
+        padding: 4px 8px;
+        opacity: 0.65;
+        transition:
+          opacity 0.2s ease,
+          transform 0.2s ease;
+        font-family: "Shippori Mincho", serif;
+      }
+      .nav:hover {
+        opacity: 1;
+        transform: scale(1.18);
+      }
+
+      .dots {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        background: rgba(207, 111, 141, 0.3);
+        transition:
+          transform 0.35s ease,
+          background 0.35s ease,
+          box-shadow 0.35s ease;
+      }
+      .dot.active {
+        background: var(--sakura-deep);
+        transform: scale(1.4);
+        box-shadow: 0 0 0 4px rgba(207, 111, 141, 0.14);
+      }
+
+      footer {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        padding: 16px 20px 30px;
+        font-size: 13.5px;
+        letter-spacing: 0.1em;
+        color: var(--ink-soft);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+      }
+      .footer-motto {
+        font-family: "Shippori Mincho", serif;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        color: var(--sakura-deep);
+        padding-left: 0.2em;
+      }
+      footer .from {
+        font-family: "Shippori Mincho", serif;
+      }
+      footer b {
+        color: var(--sakura-deep);
+        font-weight: 600;
+      }
+
+      /* botón de música de ambiente */
+      .music-toggle {
+        position: fixed;
+        right: clamp(16px, 3vw, 30px);
+        bottom: clamp(16px, 3vw, 30px);
+        z-index: 4;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(12px) saturate(125%);
+        -webkit-backdrop-filter: blur(12px) saturate(125%);
+        box-shadow:
+          0 10px 26px -12px rgba(150, 90, 120, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .music-toggle:hover {
+        transform: scale(1.07);
+      }
+      .music-toggle.playing {
+        border-color: rgba(207, 111, 141, 0.5);
+        box-shadow:
+          0 0 0 4px rgba(207, 111, 141, 0.12),
+          0 10px 26px -12px rgba(150, 90, 120, 0.5);
+      }
+      .music-toggle .eq {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 18px;
+      }
+      .music-toggle .eq span {
+        width: 3px;
+        height: 5px;
+        border-radius: 2px;
+        background: var(--sakura-deep);
+        transform-origin: bottom;
+        transition: height 0.2s ease;
+      }
+      .music-toggle:not(.playing) .eq span {
+        opacity: 0.55;
+      }
+      .music-toggle.playing .eq span {
+        animation: eq 0.9s ease-in-out infinite;
+      }
+      .music-toggle .eq span:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .music-toggle .eq span:nth-child(2) {
+        animation-delay: 0.18s;
+      }
+      .music-toggle .eq span:nth-child(3) {
+        animation-delay: 0.36s;
+      }
+      .music-toggle .eq span:nth-child(4) {
+        animation-delay: 0.12s;
+      }
+      @keyframes eq {
+        0%,
+        100% {
+          height: 5px;
+        }
+        50% {
+          height: 17px;
+        }
+      }
+
+      /* card final · cita personal (よふかしのうた) */
+      .signature {
+        width: min(560px, 92vw);
+        display: flex;
+        justify-content: center;
+      }
+      .sig-card {
+        width: 100%;
+        padding: 42px 34px;
+        border-radius: 22px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(14px) saturate(125%);
+        -webkit-backdrop-filter: blur(14px) saturate(125%);
+        box-shadow:
+          0 16px 34px -16px rgba(176, 104, 134, 0.32),
+          0 4px 10px -6px rgba(176, 104, 134, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+      .sig-tag {
+        font-family: "Shippori Mincho", serif;
+        font-size: 12px;
+        letter-spacing: 0.32em;
+        color: var(--sakura-deep);
+        opacity: 0.85;
+        padding-left: 0.32em;
+      }
+      .sig-moon {
+        color: #d9a85f;
+        opacity: 0.9;
+      }
+      .sig-quote {
+        font-family: "Shippori Mincho", serif;
+        font-weight: 600;
+        font-size: clamp(18px, 4.6vw, 24px);
+        line-height: 1.85;
+        letter-spacing: 0.06em;
+        color: var(--ink);
+        max-width: 22ch;
+        text-wrap: balance;
+      }
+      .sig-trans {
+        font-size: clamp(13px, 3.4vw, 15px);
+        line-height: 1.7;
+        color: var(--ink-soft);
+        max-width: 32ch;
+      }
+      .sig-author {
+        font-family: "Shippori Mincho", serif;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 0.16em;
+        color: var(--sakura-deep);
+      }
+
+      @media (max-width: 480px) {
+        main {
+          padding: 50px 16px 28px;
+          gap: 24px;
+        }
+        .card-inner {
+          padding: 38px 22px;
+        }
+        .sig-card {
+          padding: 34px 24px;
+        }
+        .branch {
+          opacity: 0.6;
+        }
+        .side-accent {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .petals {
+          display: none;
+        }
+        .music-toggle.playing .eq span {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- símbolo reutilizable: flor de sakura de 5 pétalos -->
+    <svg
+      width="0"
+      height="0"
+      style="position: absolute"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <g id="sakura-bloom">
+          <g fill="#f4a7c0">
+            <ellipse cx="0" cy="-6" rx="3.4" ry="5" />
+            <ellipse cx="0" cy="-6" rx="3.4" ry="5" transform="rotate(72)" />
+            <ellipse cx="0" cy="-6" rx="3.4" ry="5" transform="rotate(144)" />
+            <ellipse cx="0" cy="-6" rx="3.4" ry="5" transform="rotate(216)" />
+            <ellipse cx="0" cy="-6" rx="3.4" ry="5" transform="rotate(288)" />
+          </g>
+          <circle r="2" fill="#fff2c4" />
+        </g>
+      </defs>
+    </svg>
+
+    <div class="watermark">祝</div>
+    <div class="side-accent">桜花爛漫</div>
+
+    <!-- rama izquierda -->
+    <svg
+      class="branch branch-left"
+      viewBox="0 0 300 290"
+      fill="none"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#7a5560" stroke-width="4.5" stroke-linecap="round">
+        <path d="M-6 4 C 66 12 112 42 146 94 C 172 134 186 186 192 246" />
+        <path d="M146 94 C 176 82 212 80 252 76" />
+        <path d="M118 56 C 98 40 82 18 76 -8" />
+        <path d="M176 146 C 148 148 120 160 98 180" />
+        <path d="M192 246 C 198 232 210 222 226 214" />
+      </g>
+      <g>
+        <use href="#sakura-bloom" transform="translate(252 76) scale(1.15)" />
+        <use href="#sakura-bloom" transform="translate(236 66) scale(0.9)" />
+        <use href="#sakura-bloom" transform="translate(258 92) scale(1)" />
+        <use href="#sakura-bloom" transform="translate(76 -8) scale(1.1)" />
+        <use href="#sakura-bloom" transform="translate(60 4) scale(0.85)" />
+        <use href="#sakura-bloom" transform="translate(90 -18) scale(0.95)" />
+        <use href="#sakura-bloom" transform="translate(98 180) scale(1.1)" />
+        <use href="#sakura-bloom" transform="translate(84 196) scale(0.9)" />
+        <use href="#sakura-bloom" transform="translate(116 168) scale(0.8)" />
+        <use href="#sakura-bloom" transform="translate(226 214) scale(1.05)" />
+        <use href="#sakura-bloom" transform="translate(146 94) scale(0.7)" />
+      </g>
+    </svg>
+
+    <!-- rama derecha (espejo por CSS) -->
+    <svg
+      class="branch branch-right"
+      viewBox="0 0 300 290"
+      fill="none"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#7a5560" stroke-width="4.5" stroke-linecap="round">
+        <path d="M-6 4 C 66 12 112 42 146 94 C 172 134 186 186 192 246" />
+        <path d="M146 94 C 176 82 212 80 252 76" />
+        <path d="M118 56 C 98 40 82 18 76 -8" />
+        <path d="M176 146 C 148 148 120 160 98 180" />
+        <path d="M192 246 C 198 232 210 222 226 214" />
+      </g>
+      <g>
+        <use href="#sakura-bloom" transform="translate(252 76) scale(1.15)" />
+        <use href="#sakura-bloom" transform="translate(236 66) scale(0.9)" />
+        <use href="#sakura-bloom" transform="translate(258 92) scale(1)" />
+        <use href="#sakura-bloom" transform="translate(76 -8) scale(1.1)" />
+        <use href="#sakura-bloom" transform="translate(60 4) scale(0.85)" />
+        <use href="#sakura-bloom" transform="translate(90 -18) scale(0.95)" />
+        <use href="#sakura-bloom" transform="translate(98 180) scale(1.1)" />
+        <use href="#sakura-bloom" transform="translate(84 196) scale(0.9)" />
+        <use href="#sakura-bloom" transform="translate(116 168) scale(0.8)" />
+        <use href="#sakura-bloom" transform="translate(226 214) scale(1.05)" />
+        <use href="#sakura-bloom" transform="translate(146 94) scale(0.7)" />
+      </g>
+    </svg>
+
+    <div class="petals" id="petals"></div>
+
+    <main>
+      <div class="intro">
+        <p class="eyebrow">2026 · 三郎の誕生日</p>
+        <h1 class="greeting">お誕生日<b>おめでとう</b></h1>
+        <p class="subtitle">Feliz cumpleaños, Saburō</p>
+        <button
+          class="audio-btn"
+          id="audioBtn"
+          type="button"
+          aria-label="Escuchar audio">
+          <span class="audio-ico" aria-hidden="true">
+            <svg
+              class="ico-play"
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg
+              class="ico-pause"
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="currentColor">
+              <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+            </svg>
+          </span>
+          <span class="audio-label">Tanti Auguri a te!</span>
+        </button>
+      </div>
+
+      <div class="divider">
+        <span></span>
+        <svg
+          width="18"
+          height="18"
+          viewBox="-9 -9 18 18"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg">
+          <use href="#sakura-bloom" transform="scale(0.95)" />
+        </svg>
+        <span></span>
+      </div>
+
+      <div class="carousel-wrap">
+        <div class="carousel">
+          <div class="track">
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">一期一会</p>
+                <p class="romaji reveal">Ichigo ichie</p>
+                <p class="es reveal">Cada encuentro es único e irrepetible.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">七転び八起き</p>
+                <p class="romaji reveal">Nanakorobi yaoki</p>
+                <p class="es reveal">Caer siete veces y levantarse ocho.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">花鳥風月</p>
+                <p class="romaji reveal">Kachō fūgetsu</p>
+                <p class="es reveal">La belleza serena de la naturaleza.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">笑う門には福来る</p>
+                <p class="romaji reveal">Warau kado ni wa fuku kitaru</p>
+                <p class="es reveal">La fortuna llega a quien sonríe.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">初心忘るべからず</p>
+                <p class="romaji reveal">Shoshin wasuru bekarazu</p>
+                <p class="es reveal">
+                  Nunca olvides tu espíritu de principiante.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">桜のように</p>
+                <p class="romaji reveal">Sakura no yō ni</p>
+                <p class="es reveal">Florece a tu tiempo, como el cerezo.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">縁</p>
+                <p class="romaji reveal">En</p>
+                <p class="es reveal">
+                  El hilo invisible que une a las personas.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-inner">
+                <p class="jp reveal">健やかなる一年を</p>
+                <p class="romaji reveal">Sukoyaka naru ichinen o</p>
+                <p class="es reveal">
+                  Que tengas un año pleno y lleno de salud.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button
+            class="nav nav-prev"
+            type="button"
+            aria-label="Frase anterior">
+            &#8249;
+          </button>
+          <div class="dots" id="dots"></div>
+          <button
+            class="nav nav-next"
+            type="button"
+            aria-label="Frase siguiente">
+            &#8250;
+          </button>
+        </div>
+      </div>
+
+      <section class="signature">
+        <div class="sig-card">
+          <span class="sig-tag">よふかしのうた</span>
+          <svg
+            class="sig-moon"
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <p class="sig-quote">
+            夜眠れないのは、その日に満足できなかったからだ。
+          </p>
+          <p class="sig-trans">
+            «Si a la noche no te puedes dormir, es porque no estuviste
+            satisfecho con tu día.»
+          </p>
+          <p class="sig-author">— Juudini</p>
+        </div>
+      </section>
+    </main>
+
+    <button
+      class="music-toggle"
+      id="musicToggle"
+      type="button"
+      aria-label="Reproducir música de ambiente"
+      aria-pressed="false"
+      title="Música de ambiente">
+      <span class="eq" aria-hidden="true"
+        ><span></span><span></span><span></span><span></span
+      ></span>
+    </button>
+
+    <audio id="saburouAudio" src="/juudini/saburou.mp3" preload="none"></audio>
+
+    <footer>
+      <p class="footer-motto">決めるのは我だ。</p>
+      <span class="from"
+        >心を込めて — <b>juudini</b>（ジュウディーニ）より</span
+      >
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var hasGSAP = typeof gsap !== "undefined";
+
+        /* ---------- pétalos de sakura ---------- */
+        var layer = document.getElementById("petals");
+        var reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        var shades = [
+          "radial-gradient(circle at 32% 28%, #ffe6ee 0%, #f7b3c8 60%, #ee93b0 100%)",
+          "radial-gradient(circle at 32% 28%, #fff0f4 0%, #f9c6d6 60%, #f2a6bd 100%)",
+          "radial-gradient(circle at 32% 28%, #ffe2ea 0%, #f3a0bb 60%, #e681a3 100%)",
+        ];
+
+        function fallLoop(fall) {
+          gsap.set(fall, { x: Math.random() * window.innerWidth, y: -60 });
+          gsap.to(fall, {
+            y: window.innerHeight + 80,
+            duration: 9 + Math.random() * 9,
+            ease: "none",
+            onComplete: function () {
+              fallLoop(fall);
+            },
+          });
+        }
+
+        function makePetal() {
+          var fall = document.createElement("div");
+          fall.className = "petal-fall";
+          var petal = document.createElement("div");
+          petal.className = "petal";
+          var size = 9 + Math.random() * 11;
+          petal.style.width = size + "px";
+          petal.style.height = size + "px";
+          petal.style.background = shades[(Math.random() * shades.length) | 0];
+          petal.style.opacity = (0.55 + Math.random() * 0.4).toFixed(2);
+          fall.appendChild(petal);
+          layer.appendChild(fall);
+
+          // balanceo + giro infinito sobre el pétalo interior
+          gsap.to(petal, {
+            x: (Math.random() > 0.5 ? 1 : -1) * (26 + Math.random() * 46),
+            rotation: "+=" + (220 + Math.random() * 260),
+            duration: 3 + Math.random() * 3,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+
+          // primera caída, repartida por la pantalla
+          gsap.set(fall, {
+            x: Math.random() * window.innerWidth,
+            y: -Math.random() * window.innerHeight,
+          });
+          gsap.to(fall, {
+            y: window.innerHeight + 80,
+            duration: 9 + Math.random() * 9,
+            ease: "none",
+            onComplete: function () {
+              fallLoop(fall);
+            },
+          });
+        }
+
+        if (hasGSAP && !reduce && layer) {
+          var count = window.innerWidth < 600 ? 16 : 28;
+          for (var i = 0; i < count; i++) makePetal();
+        }
+
+        /* ---------- carrusel de frases ---------- */
+        var carousel = document.querySelector(".carousel");
+        var track = document.querySelector(".track");
+        var cards = Array.prototype.slice.call(
+          document.querySelectorAll(".card"),
+        );
+        var dotsWrap = document.getElementById("dots");
+        var index = 0;
+        var timer = null;
+
+        function width() {
+          return carousel.clientWidth;
+        }
+
+        function place() {
+          var x = -index * width();
+          if (hasGSAP) gsap.set(track, { x: x });
+          else track.style.transform = "translateX(" + x + "px)";
+        }
+
+        function reveal(i) {
+          if (!hasGSAP) return;
+          var els = cards[i].querySelectorAll(".reveal");
+          gsap.fromTo(
+            els,
+            { y: 22, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.85,
+              stagger: 0.09,
+              ease: "power2.out",
+              delay: 0.2,
+            },
+          );
+        }
+
+        function setDots() {
+          Array.prototype.forEach.call(dotsWrap.children, function (d, i) {
+            d.classList.toggle("active", i === index);
+          });
+        }
+
+        function go(i) {
+          index = (i + cards.length) % cards.length;
+          if (hasGSAP) {
+            gsap.to(track, {
+              x: -index * width(),
+              duration: 1.0,
+              ease: "power3.inOut",
+            });
+          } else {
+            track.style.transform = "translateX(" + -index * width() + "px)";
+          }
+          setDots();
+          reveal(index);
+        }
+
+        function next() {
+          go(index + 1);
+        }
+        function prev() {
+          go(index - 1);
+        }
+        function start() {
+          stop();
+          timer = setInterval(next, 4800);
+        }
+        function stop() {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+        }
+
+        cards.forEach(function (_, i) {
+          var b = document.createElement("button");
+          b.className = "dot";
+          b.type = "button";
+          b.setAttribute("aria-label", "Frase " + (i + 1));
+          b.addEventListener("click", function () {
+            go(i);
+            start();
+          });
+          dotsWrap.appendChild(b);
+        });
+
+        document
+          .querySelector(".nav-next")
+          .addEventListener("click", function () {
+            next();
+            start();
+          });
+        document
+          .querySelector(".nav-prev")
+          .addEventListener("click", function () {
+            prev();
+            start();
+          });
+
+        var wrap = document.querySelector(".carousel-wrap");
+        wrap.addEventListener("mouseenter", stop);
+        wrap.addEventListener("mouseleave", start);
+
+        window.addEventListener("resize", place);
+
+        place();
+        setDots();
+        reveal(0);
+        start();
+
+        /* ---------- entrada suave ---------- */
+        if (hasGSAP) {
+          gsap.from(".intro > *", {
+            y: 18,
+            opacity: 0,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: "power2.out",
+          });
+          gsap.from(".carousel-wrap", {
+            opacity: 0,
+            y: 20,
+            duration: 1,
+            delay: 0.3,
+            ease: "power2.out",
+          });
+          gsap.from(".signature", {
+            opacity: 0,
+            y: 24,
+            duration: 1,
+            delay: 0.5,
+            ease: "power2.out",
+          });
+          gsap.from(".branch", {
+            opacity: 0,
+            duration: 1.6,
+            stagger: 0.2,
+            ease: "power1.out",
+          });
+        }
+
+        /* ---------- música de ambiente (generada con Web Audio) ---------- */
+        (function () {
+          var btn = document.getElementById("musicToggle");
+          if (!btn) return;
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) {
+            btn.style.display = "none";
+            return;
+          }
+
+          var ctx = null,
+            master = null;
+          var playing = false;
+          var schedTimer = null;
+          var nextTime = 0;
+
+          // escala pentatónica (La mayor / 陽 Yo) — serena y de aire japonés
+          var scale = [
+            220.0, 246.94, 277.18, 329.63, 369.99, 440.0, 493.88, 554.37,
+            659.25,
+          ];
+
+          function now() {
+            return ctx.currentTime;
+          }
+
+          function setup() {
+            ctx = new AC();
+            master = ctx.createGain();
+            master.gain.value = 0;
+
+            var soft = ctx.createBiquadFilter();
+            soft.type = "lowpass";
+            soft.frequency.value = 2400;
+            soft.Q.value = 0.2;
+
+            // eco suave para dar espacio
+            var delay = ctx.createDelay(1.0);
+            delay.delayTime.value = 0.36;
+            var fb = ctx.createGain();
+            fb.gain.value = 0.3;
+            var wet = ctx.createGain();
+            wet.gain.value = 0.3;
+
+            master.connect(soft);
+            soft.connect(ctx.destination);
+            soft.connect(delay);
+            delay.connect(fb);
+            fb.connect(delay);
+            delay.connect(wet);
+            wet.connect(ctx.destination);
+
+            // pad cálido sostenido que respira
+            var padGain = ctx.createGain();
+            padGain.gain.value = 0.06;
+            padGain.connect(master);
+            [110.0, 164.81, 220.0].forEach(function (f, i) {
+              var o = ctx.createOscillator();
+              o.type = i === 0 ? "sine" : "triangle";
+              o.frequency.value = f;
+              o.detune.value = (i - 1) * 4;
+              var g = ctx.createGain();
+              g.gain.value = i === 0 ? 0.5 : 0.28;
+              o.connect(g);
+              g.connect(padGain);
+              var lfo = ctx.createOscillator();
+              lfo.frequency.value = 0.05 + i * 0.02;
+              var lg = ctx.createGain();
+              lg.gain.value = g.gain.value * 0.45;
+              lfo.connect(lg);
+              lg.connect(g.gain);
+              o.start();
+              lfo.start();
+            });
+          }
+
+          function pluck(freq, t, vel) {
+            var o = ctx.createOscillator();
+            o.type = "triangle";
+            o.frequency.value = freq;
+            var o2 = ctx.createOscillator();
+            o2.type = "sine";
+            o2.frequency.value = freq * 2;
+            var g = ctx.createGain();
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(vel, t + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 1.9);
+            var g2 = ctx.createGain();
+            g2.gain.value = 0.25;
+            o.connect(g);
+            o2.connect(g2);
+            g2.connect(g);
+            g.connect(master);
+            o.start(t);
+            o2.start(t);
+            o.stop(t + 2);
+            o2.stop(t + 2);
+          }
+
+          function schedule() {
+            while (nextTime < now() + 0.2) {
+              if (Math.random() > 0.32) {
+                pluck(
+                  scale[(Math.random() * scale.length) | 0],
+                  nextTime,
+                  0.16 + Math.random() * 0.1,
+                );
+                if (Math.random() > 0.78) {
+                  pluck(
+                    scale[(Math.random() * scale.length) | 0],
+                    nextTime + 0.18,
+                    0.1,
+                  );
+                }
+              }
+              nextTime += 0.62 + Math.random() * 0.5;
+            }
+          }
+
+          function start() {
+            // si está sonando el audio de saburou, lo pausamos para no solaparse
+            var msg = document.getElementById("saburouAudio");
+            if (msg && !msg.paused) msg.pause();
+            if (!ctx) setup();
+            if (ctx.state === "suspended") ctx.resume();
+            playing = true;
+            btn.classList.add("playing");
+            btn.setAttribute("aria-pressed", "true");
+            btn.setAttribute("aria-label", "Silenciar música de ambiente");
+            master.gain.cancelScheduledValues(now());
+            master.gain.setValueAtTime(master.gain.value, now());
+            master.gain.linearRampToValueAtTime(0.16, now() + 2.0);
+            nextTime = now() + 0.1;
+            schedule();
+            schedTimer = setInterval(schedule, 100);
+          }
+
+          function stop() {
+            playing = false;
+            btn.classList.remove("playing");
+            btn.setAttribute("aria-pressed", "false");
+            btn.setAttribute("aria-label", "Reproducir música de ambiente");
+            if (schedTimer) {
+              clearInterval(schedTimer);
+              schedTimer = null;
+            }
+            if (master) {
+              master.gain.cancelScheduledValues(now());
+              master.gain.setValueAtTime(master.gain.value, now());
+              master.gain.linearRampToValueAtTime(0, now() + 0.8);
+            }
+            setTimeout(function () {
+              if (!playing && ctx) ctx.suspend();
+            }, 1000);
+          }
+
+          btn.addEventListener("click", function () {
+            if (playing) stop();
+            else start();
+          });
+
+          document.addEventListener("visibilitychange", function () {
+            if (!ctx || !playing) return;
+            if (document.hidden) ctx.suspend();
+            else ctx.resume();
+          });
+        })();
+
+        /* ---------- botón "escuchar audio" (mensaje para saburou) ---------- */
+        (function () {
+          var btn = document.getElementById("audioBtn");
+          var audio = document.getElementById("saburouAudio");
+          if (!btn || !audio) return;
+          var label = btn.querySelector(".audio-label");
+          var musicBtn = document.getElementById("musicToggle");
+
+          btn.addEventListener("click", function () {
+            if (audio.paused) audio.play().catch(function () {});
+            else audio.pause();
+          });
+
+          audio.addEventListener("play", function () {
+            // apaga la música de ambiente si está sonando, para no solaparse
+            if (musicBtn && musicBtn.classList.contains("playing"))
+              musicBtn.click();
+            btn.classList.add("playing");
+            btn.setAttribute("aria-label", "Pausar audio");
+            if (label) label.textContent = "pausar audio";
+          });
+          function reset() {
+            btn.classList.remove("playing");
+            btn.setAttribute("aria-label", "Escuchar audio");
+            if (label) label.textContent = "escuchar audio";
+          }
+          audio.addEventListener("pause", reset);
+          audio.addEventListener("ended", reset);
+        })();
+      });
+    </script>
+  </body>
+</html>
