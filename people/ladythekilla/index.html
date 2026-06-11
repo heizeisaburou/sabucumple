@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Sabucumple - LadyTheKilla</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.6.0/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1926;
+      --mid: #0f2030;
+      --card: #112236;
+      --card2: #0e1c2e;
+      --cyan: #4fc3f7;
+      --cyan2: #00bcd4;
+      --cyan3: #b2ebf2;
+      --purple: #c792ea;
+      --green: #a8cc8c;
+      --yellow: #ffcb6b;
+      --text: #cdd3de;
+      --muted: #546e7a;
+      --white: #e8f0fe;
+      --sakura: #ffb7c5;
+      --sakura2: #e91e8c;
+      --sakura3: #ff6eb4;
+      --border: #1a3a5a;
+      --mono: 'Share Tech Mono', monospace;
+      --title: 'Rajdhani', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--title);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: var(--bg);
+      padding: 70px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(233,30,140,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(199,146,234,0.10) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 90%, rgba(79,195,247,0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #08101a 0%, #0d1926 100%);
+    }
+
+    .hero-kanji {
+      font-family: serif;
+      font-size: 42px;
+      color: var(--sakura);
+      opacity: 0.12;
+      position: absolute;
+      right: 24px; top: 40px;
+      writing-mode: vertical-rl;
+      letter-spacing: 8px;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .sakura-wrap {
+      position: absolute; inset: 0;
+      pointer-events: none; overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      border-radius: 50% 0 50% 0;
+      opacity: 0;
+      animation: sakfall linear infinite;
+    }
+
+    @keyframes sakfall {
+      0%   { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 0.9; }
+      40%  { opacity: 0.7; }
+      100% { transform: translateY(620px) rotate(520deg) scale(0.7); opacity: 0; }
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .jp-sub {
+      font-family: serif;
+      font-size: 15px;
+      letter-spacing: 5px;
+      color: var(--sakura);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: var(--title);
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .hero-title .acc {
+      color: var(--cyan);
+      text-shadow: 0 0 25px rgba(79,195,247,0.35);
+    }
+
+    .hero-mono {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .hero-mono .br { color: var(--cyan2); }
+
+    .road-strip {
+      height: 48px;
+      background: #060e18;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rline {
+      position: absolute;
+      top: 50%; height: 3px;
+      background: var(--cyan2);
+      border-radius: 2px;
+      animation: rscroll 1.85s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes rscroll {
+      0%   { left: -80px; }
+      100% { left: 110%; }
+    }
+
+    .section { padding: 32px 24px; }
+    .section.alt { background: var(--mid); }
+
+    .bg-saburun {
+      background:
+        linear-gradient(to right, rgba(13,25,38,0.96) 0%, rgba(13,25,38,0.86) 50%, rgba(13,25,38,0.55) 100%),
+        url('assets/saburun.png') right top / cover no-repeat fixed;
+    }
+
+    .bg-yozakura {
+      background:
+        linear-gradient(to right, rgba(13,25,38,0.96) 0%, rgba(13,25,38,0.86) 50%, rgba(13,25,38,0.62) 100%),
+        url('assets/yozakura.jpg') right center / cover no-repeat;
+    }
+
+    .bg-saburun .section,
+    .bg-saburun .section.alt,
+    .bg-yozakura .section,
+    .bg-yozakura .section.alt { background: transparent; }
+
+    .bg-carrito {
+      background:
+        linear-gradient(rgba(13,25,38,0.9), rgba(13,25,38,0.84)),
+        url('assets/carrito.jpg') center 70% / cover no-repeat;
+    }
+
+    .bg-carrito .waifu-section,
+    .bg-carrito .msg-section { background: transparent; }
+
+    .sec-label {
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--cyan2);
+      margin-bottom: 10px;
+    }
+
+    .kw  { color: var(--purple); }
+    .str { color: var(--green); }
+
+    .sec-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .sec-sub {
+      font-size: 17px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .sbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .sbar-lbl {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--cyan2);
+      width: 76px;
+      text-align: right;
+    }
+
+    .sbar-track {
+      flex: 1; height: 5px;
+      background: #1a2a3a;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .sbar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--cyan2), var(--cyan));
+      transition: width 1s ease;
+    }
+
+    .sbar-val {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      width: 40px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+    }
+
+    .card-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .card-icon { font-size: 22px; margin-bottom: 8px; }
+    .card-name { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .card-desc { font-size: 15px; color: var(--text); line-height: 1.5; }
+    .card-jp   { font-family: serif; font-size: 16px; margin-top: 8px; display: block; }
+
+    .music-player {
+      background: rgba(14, 28, 46, 0.42);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .music-player:hover { border-color: var(--cyan); }
+
+    .music-player.playing {
+      border-color: var(--sakura3);
+      box-shadow: 0 0 18px rgba(255,110,180,0.15);
+    }
+
+    .music-player.playing .music-art { border-color: var(--sakura3); }
+
+    .music-art {
+      width: 54px; height: 54px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      background: rgba(6, 16, 30, 0.45);
+      border: 1px solid var(--cyan2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .music-title  { font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+    .music-artist { font-size: 14px; color: var(--text); }
+
+    .music-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      color: #002a35;
+      margin-top: 6px;
+    }
+
+    .eq-bars {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 24px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .eq-bar {
+      width: 4px;
+      border-radius: 2px;
+      animation: eq 0.5s ease infinite alternate;
+      animation-play-state: paused;
+      height: 4px;
+    }
+
+    .music-player.playing .eq-bar { animation-play-state: running; }
+
+    @keyframes eq {
+      0%   { height: 3px; }
+      100% { height: 22px; }
+    }
+
+    .term-box {
+      background: #03101f url('assets/sabuterm.png') right 18px center / auto 94% no-repeat;
+      border: 1px solid #0e2f46;
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-family: var(--mono);
+      font-size: 14px;
+    }
+
+    .term-dots {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .td { width: 11px; height: 11px; border-radius: 50%; }
+
+    .tl { color: #6fc3dc; margin: 3px 0; line-height: 1.8; }
+    .tp { color: var(--cyan); }
+    .tcmd { color: #cfe9f5; }
+    .tout { color: var(--muted); }
+    .tok  { color: #4ec9b0; }
+    .tred  { color: #ff5370; }
+    .thint { color: #3a7d96; }
+
+    .tcursor {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--cyan);
+      vertical-align: -2px;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+
+    .waifu-section {
+      background: var(--mid);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .waifu-hearts-float {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: var(--sakura);
+      animation: heartpulse 2s ease infinite;
+    }
+
+    @keyframes heartpulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.1); }
+    }
+
+    .waifu-frame {
+      width: 210px; height: 210px;
+      border-radius: 50%;
+      border: 3px solid var(--sakura);
+      margin: 0 auto 18px;
+      overflow: hidden;
+      background: #c8c8cc;
+      position: relative;
+    }
+
+    .waifu-frame img {
+      position: absolute;
+      width: 256.7%;
+      height: auto;
+      left: -131.7%;
+      top: 0;
+      display: block;
+    }
+
+    .waifu-bubble {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: inline-block;
+      font-size: 17px;
+      color: var(--white);
+      line-height: 1.7;
+      max-width: 400px;
+    }
+
+    .waifu-jp {
+      font-family: serif;
+      font-size: 16px;
+      color: var(--cyan3);
+      display: block;
+      margin-top: 8px;
+    }
+
+    .msg-section {
+      background: var(--bg);
+      padding: 32px 24px;
+      border-left: 4px solid var(--cyan2);
+    }
+
+    .msg-text {
+      font-size: 18px;
+      color: var(--white);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .msg-jp {
+      font-family: serif;
+      font-size: 17px;
+      color: var(--sakura);
+      display: block;
+      margin-top: 10px;
+    }
+
+    .footer {
+      background: var(--mid);
+      padding: 18px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--white);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer span { color: var(--cyan); }
+
+    .ae86-wrap { text-align: center; }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 42px; }
+      .hero { padding: 36px 16px 36px; }
+      .section { padding: 24px 16px; }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .hero-kanji { font-size: 32px; right: 12px; }
+    }
+
+.gallery {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #1a3a5a;
+}
+
+.gallery-track {
+  display: flex;
+  gap: 0px;
+  animation: slide 20s linear infinite;
+}
+
+.gallery-track img {
+  width: 280px;
+  height: 175px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@keyframes slide {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+  </style>
+</head>
+<body>
+
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="sakura-wrap" id="sakura"></div>
+    <span class="hero-kanji">夜桜狂宴</span>
+    <div class="hero-content">
+      <p class="jp-sub">お誕生日おめでとう</p>
+      <h1 class="hero-title">Happy<br><span class="acc">Sabucumple</span></h1>
+      <p class="hero-mono">[ <span class="br">三郎</span> · <span class="br">Saburou</span> · <span class="br">平城</span> ]</p>
+      <p class="jp-sub" style="margin-top: 16px;">🌊 あなたが見える ~ 見てるよ 🌊</p>
+    </div>
+  </div>
+
+  <div class="road-strip">
+    <div class="rline" style="animation-delay:0s; width:55px;"></div>
+    <div class="rline" style="animation-delay:.62s; width:45px;"></div>
+    <div class="rline" style="animation-delay:.56s; width:65px;"></div>
+  </div>
+
+  <div class="bg-saburun">
+  <div class="section alt">
+    <p class="sec-label"><span class="kw">import</span> <span class="str">"initial-S/SA94"</span></p>
+    <h2 class="sec-title">頭文字D</h2>
+    <p class="sec-sub">Takumi manejaba tofu de noche en el Akina. Saburou maneja Go en Arch a las 3am. Básicamente lo mismo, pero mucho mejor con Sabu siempre es mucho mejor. あなたが見える</p>
+
+    <div class="gallery">
+  <div class="gallery-track">
+    <img src="assets/carrito2.jpeg" alt="foto 1">
+    <img src="assets/azo.jpg" alt="foto 2">
+    <img src="assets/carred.jpg" alt="foto 3">
+    <img src="assets/carrazo3.jpeg" alt="foto 4">
+    <img src="assets/carrito2.jpeg" alt="">
+    <img src="assets/azo.jpg" alt="">
+    <img src="assets/carred.jpg" alt="">
+    <img src="assets/carrazo3.jpeg" alt="">
+    <img src="assets/carrito2.jpeg" alt="">
+    <img src="assets/azo.jpg" alt="">
+    <img src="assets/carred.jpg" alt="">
+    <img src="assets/carrazo3.jpeg" alt="">
+    <img src="assets/carrito2.jpeg" alt="">
+    <img src="assets/azo.jpg" alt="">
+    <img src="assets/carred.jpg" alt="">
+    <img src="assets/carrazo3.jpeg" alt="">
+  </div>
+</div>
+  </div>
+
+  <div class="section">
+    <p class="sec-label"><span class="kw">type</span> <span style="color:#c792ea;">Saburou</span> <span class="kw">struct</span> {</p>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-bar" style="background: linear-gradient(to right, #4fc3f7, #00bcd4);"></div>
+        <div class="card-icon"><i class="ti ti-car" style="color: #4fc3f7;" aria-hidden="true"></i></div>
+        <div class="card-name">Full throttle</div>
+        <div class="card-desc">Autos, motos, velocidad sin límites.</div>
+        <span class="card-jp" style="color: #4fc3f7;">速い！</span>
+      </div>
+      <div class="card">
+        <div class="card-bar" style="background: linear-gradient(to right, #ffcb6b, #ff9800);"></div>
+        <div class="card-icon"><i class="ti ti-torii" style="color: #ffcb6b;" aria-hidden="true"></i></div>
+        <div class="card-name">和の魂</div>
+        <div class="card-desc">Japón en el alma. Kanji en el código.</div>
+        <span class="card-jp" style="color: #ffcb6b;">日本大好き</span>
+      </div>
+      <div class="card">
+        <div class="card-bar" style="background: linear-gradient(to right, #a8cc8c, #4caf50);"></div>
+        <div class="card-icon"><i class="ti ti-terminal-2" style="color: #a8cc8c;" aria-hidden="true"></i></div>
+        <div class="card-name">Arch + Go</div>
+        <div class="card-desc">btw. Y lo que buildea corre a 300 km/h.</div>
+        <span class="card-jp" style="color: #a8cc8c;">コーダー</span>
+      </div>
+      <div class="card">
+        <div class="card-bar" style="background: linear-gradient(to right, #c792ea, #9c27b0);"></div>
+        <div class="card-icon"><i class="ti ti-sword" style="color: #c792ea;" aria-hidden="true"></i></div>
+        <div class="card-name">Teyvat</div>
+        <div class="card-desc">Genshin y monas chinas. Las dos cosas.</div>
+        <span class="card-jp" style="color: #c792ea;">原神</span>
+      </div>
+    </div>
+    <p class="sec-label" style="margin-top: 12px;">}</p>
+  </div>
+  </div>
+
+ 
+  <div class="bg-yozakura">
+  <div class="section alt">
+    <p class="sec-label"><span class="kw">func</span> <span style="color: #4fc3f7;">playlist</span>() <span style="color: #c792ea;">[]Track</span> {</p>
+
+    <div class="music-player" data-yt="OuLZlZ18APQ">
+      <div class="music-art">🌸</div>
+      <div style="flex:1; min-width:0;">
+        <div class="music-title">「マジカルミライ 2016」 39みゅーじっく！</div>
+        <div class="music-artist">初音ミク · 【オリジナルMV】</div>
+        <span class="music-tag" style="background: #e91e8c;">click para reproducir · canción completa</span>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:0s; background:#e91e8c;"></div>
+        <div class="eq-bar" style="animation-delay:.1s; background:#e91e8c;"></div>
+        <div class="eq-bar" style="animation-delay:.2s; background:#e91e8c;"></div>
+        <div class="eq-bar" style="animation-delay:.3s; background:#e91e8c;"></div>
+        <div class="eq-bar" style="animation-delay:.4s; background:#e91e8c;"></div>
+      </div>
+    </div>
+
+    <div class="music-player" data-audio="assets/MikuHatsune2.mp3">
+      <div class="music-art">🎤</div>
+      <div style="flex:1; min-width:0;">
+        <div class="music-title">初音ミク · トラック 02</div>
+        <div class="music-artist">Hatsune Miku</div>
+        <span class="music-tag" style="background: #c792ea;">click para reproducir · 33s</span>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:.05s; background:#c792ea;"></div>
+        <div class="eq-bar" style="animation-delay:.15s; background:#c792ea;"></div>
+        <div class="eq-bar" style="animation-delay:.25s; background:#c792ea;"></div>
+        <div class="eq-bar" style="animation-delay:.10s; background:#c792ea;"></div>
+        <div class="eq-bar" style="animation-delay:.20s; background:#c792ea;"></div>
+      </div>
+    </div>
+
+    <div class="music-player" data-audio="assets/HatsuneMiku1.mp3">
+      <div class="music-art">💙</div>
+      <div style="flex:1; min-width:0;">
+        <div class="music-title">初音ミク · トラック 03</div>
+        <div class="music-artist">Hatsune Miku</div>
+        <span class="music-tag" style="background: #4fc3f7;">click para reproducir · 38s</span>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:0s; background:#4fc3f7;"></div>
+        <div class="eq-bar" style="animation-delay:.2s; background:#4fc3f7;"></div>
+        <div class="eq-bar" style="animation-delay:.1s; background:#4fc3f7;"></div>
+        <div class="eq-bar" style="animation-delay:.3s; background:#4fc3f7;"></div>
+        <div class="eq-bar" style="animation-delay:.15s; background:#4fc3f7;"></div>
+      </div>
+    </div>
+
+    <div class="music-player" data-audio="assets/KurumiTokisaki.mp3">
+      <div class="music-art">🕰️</div>
+      <div style="flex:1; min-width:0;">
+        <div class="music-title">時崎狂三 · Kurumi Tokisaki</div>
+        <div class="music-artist">デート・ア・ライブ</div>
+        <span class="music-tag" style="background: #e53935;">click para reproducir · 41s</span>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:.1s; background:#e53935;"></div>
+        <div class="eq-bar" style="animation-delay:0s; background:#e53935;"></div>
+        <div class="eq-bar" style="animation-delay:.3s; background:#e53935;"></div>
+        <div class="eq-bar" style="animation-delay:.2s; background:#e53935;"></div>
+        <div class="eq-bar" style="animation-delay:.4s; background:#e53935;"></div>
+      </div>
+    </div>
+
+    <a href="https://www.youtube.com/watch?v=C9tmpUQDxyo" target="_blank" class="music-player" style="text-decoration:none;">
+      <div class="music-art">🏎️</div>
+      <div style="flex:1; min-width:0;">
+        <div class="music-title">クレイジー・リトル・ラブ</div>
+        <div class="music-artist">ヌアージュ · 頭文字D</div>
+        <span class="music-tag" style="background: #00bcd4;">~ 頭文字D ユーロビート ~ · ver en YouTube</span>
+      </div>
+      <div class="eq-bars">
+        <div class="eq-bar" style="animation-delay:.15s; background:#00bcd4;"></div>
+        <div class="eq-bar" style="animation-delay:.05s; background:#00bcd4;"></div>
+        <div class="eq-bar" style="animation-delay:.25s; background:#00bcd4;"></div>
+        <div class="eq-bar" style="animation-delay:.10s; background:#00bcd4;"></div>
+        <div class="eq-bar" style="animation-delay:.30s; background:#00bcd4;"></div>
+      </div>
+    </a>
+
+    <p class="sec-label" style="margin-top: 6px;">}</p>
+  </div>
+  </div>
+
+  <!-- ====== TERMINAL ====== -->
+  <div class="section">
+    <p class="sec-label"><span class="kw">var</span> terminal = <span class="str">"saburou@archlinux"</span></p>
+    <div class="term-box">
+      <div class="term-dots">
+        <div class="td" style="background: #ff5f57;"></div>
+        <div class="td" style="background: #febc2e;"></div>
+        <div class="td" style="background: #28c840;"></div>
+        <span style="font-size: 10px; color: #546e7a; margin-left: 8px; font-family: 'Share Tech Mono', monospace;">三郎 - Sabu</span>
+      </div>
+      <div class="tl"><span class="tred">❯</span> <span class="tp">sabu@arch</span> ~ <span class="tcmd">sudo pacman -S cumpleaños-feliz</span></div>
+      <div class="tl thint">:: Resolviendo dependencias...</div>
+      <div class="tl thint">:: velocidad-max japón-unlim eurobeat-9k ae86-drift</div>
+      <div class="tl"><span class="tok">✓</span> instalado: <span class="str">sabucumple-2026</span></div>
+      <div class="tl"><span class="tred">❯</span> <span class="tp">sabu@arch</span> ~ <span class="tcmd">go run main.go --turbo --sakura</span></div>
+      <div class="tl"><span class="tok">🎂</span> <span style="color: #4fc3f7;">compilado en 0ms · sin errores</span> <span class="tcursor"></span></div>
+    </div>
+  </div>
+
+  <div class="bg-carrito">
+  <div class="waifu-section">
+    <p class="sec-label"><span class="kw">return</span> <span class="str">"fav waifu"</span></p>
+    <div class="waifu-hearts-float">♡ ♡ ♡</div>
+    <div class="waifu-frame">
+      <img src="assets/saburun.png" alt="waifu favorita de Sabu"/>
+    </div>
+    <div class="waifu-bubble">
+      Feliz cumpleaños, Sabu-kun! Que este año esté lleno de buenas rutas, código limpio y sakuras. ♡
+      <span class="waifu-jp">おめでとう！いつもありがとう！</span>
+    </div>
+  </div>
+
+  <div class="msg-section">
+    <p class="sec-label"><span class="kw">func</span> <span style="color: #4fc3f7;">mensaje</span>() <span style="color: #c792ea;">string</span></p>
+    <p class="msg-text">
+      Ole Sabu, que cumplas muchos más rodeado de lo que más te gusta: velocidad a full,
+      Japón en el alma, Arch que no rompe (mentira sí rompe), Go que compila a la primera,
+      y monas chinas de cinco estrellas. Que este año arranque en primera y no pare,
+      igual que el AE86 de Takumi bajando el Akina a las 3am. 🏎️🌸
+    </p>
+    <span class="msg-jp">ハッピーバースデー！いつもありがとう、三郎。</span>
+  </div>
+  </div>
+
+  <!-- ====== FOOTER ====== -->
+  <div class="footer">
+    hecho con <span>Go + ♡</span> · deployado en <span>Arch btw</span> · firmado por <span>LadyTheKilla</span>
+  </div>
+
+  <!-- ====== SAKURA GENERATOR ====== -->
+  <script>
+    (function() {
+      var wrap = document.getElementById('sakura');
+      var colors = ['#ffb7c5','#ff80ab','#ffc1d6','#e8a0b8','#f48fb1','#ce93d8'];
+      for (var i = 0; i < 35; i++) {
+        var p = document.createElement('div');
+        p.className = 'petal';
+        var sz = 5 + Math.random() * 10;
+        var c = colors[Math.floor(Math.random() * colors.length)];
+        var dur = 4 + Math.random() * 5;
+        var delay = Math.random() * 8;
+        p.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;left:' + (Math.random()*100) + '%;top:' + (Math.random()*-40) + 'px;background:' + c + ';animation-duration:' + dur + 's;animation-delay:' + delay + 's;';
+        wrap.appendChild(p);
+      }
+    })();
+  </script>
+
+  <div id="yt-hidden" style="position:absolute; width:0; height:0; overflow:hidden;"></div>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    (function() {
+      var audio = new Audio();
+      var current = null;
+      var ytCard = document.querySelector('.music-player[data-yt]');
+      var ytPlayer = null;
+      var ytReady = false;
+
+      window.onYouTubeIframeAPIReady = function() {
+        ytPlayer = new YT.Player('yt-hidden', {
+          width: 1, height: 1,
+          videoId: ytCard.getAttribute('data-yt'),
+          events: {
+            onReady: function() { ytReady = true; },
+            onStateChange: function(e) {
+              if (e.data === YT.PlayerState.PLAYING) ytCard.classList.add('playing');
+              else ytCard.classList.remove('playing');
+            }
+          }
+        });
+      };
+
+      function stopLocal() {
+        audio.pause();
+        if (current) current.classList.remove('playing');
+      }
+
+      function stopYT() {
+        if (ytReady && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+      }
+
+      if (ytCard) {
+        ytCard.addEventListener('click', function() {
+          if (!ytReady) return;
+          if (ytCard.classList.contains('playing')) {
+            ytPlayer.pauseVideo();
+            return;
+          }
+          stopLocal();
+          ytPlayer.playVideo();
+        });
+      }
+
+      document.querySelectorAll('.music-player[data-audio]').forEach(function(pl) {
+        pl.addEventListener('click', function() {
+          stopYT();
+          if (current === pl && !audio.paused) {
+            audio.pause();
+            pl.classList.remove('playing');
+            return;
+          }
+          if (current && current !== pl) {
+            current.classList.remove('playing');
+          }
+          if (current !== pl) {
+            audio.src = pl.getAttribute('data-audio');
+            current = pl;
+          }
+          audio.play();
+          pl.classList.add('playing');
+        });
+      });
+
+      audio.addEventListener('ended', function() {
+        if (current) current.classList.remove('playing');
+      });
+    })();
+  </script>
+
+</body>
+</html>
