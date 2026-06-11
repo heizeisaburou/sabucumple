@@ -12,6 +12,7 @@ import (
 	"github.com/heizeisaburou/sabucumple/people/midos"
 	"github.com/heizeisaburou/sabucumple/people/savage"
 	"github.com/heizeisaburou/sabucumple/people/chavsi"
+	"github.com/heizeisaburou/sabucumple/people/saburou"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
     midos.New(),
     savage.New(),
     chavsi.New(),
+    saburou.New(),
   }
 
 
