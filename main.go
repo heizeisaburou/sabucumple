@@ -9,6 +9,7 @@ import (
 
 	"github.com/heizeisaburou/sabucumple/module"
 	"github.com/heizeisaburou/sabucumple/people/ejemplo"
+	"github.com/heizeisaburou/sabucumple/people/chavsi"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 
 	modules := []module.Module{
 		ejemplo.New(),
+		chavsi.New(),
 	}
 
 	e.GET("/", func(c *echo.Context) error {

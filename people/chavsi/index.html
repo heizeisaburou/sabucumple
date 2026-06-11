@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Mapa del Dev — CHAVSI</title>
+<style>
+  :root{
+    --bg:#0c1513; --board:#111d1a; --edge:#1d2e29;
+    --copper:#cf8b3e; --copper-bright:#ecae66;
+    --silk:#dbe4df; --silk-dim:#6f7f78; --ok:#7fe0a0;
+    --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:radial-gradient(130% 100% at 50% -10%, #13211d 0%, var(--bg) 60%);
+    color:var(--silk);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(1rem,4vw,2.5rem);
+  }
+  .wrap{max-width:1040px;margin:0 auto}
+
+  header{margin-bottom:1.4rem;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.22em;color:var(--silk-dim);text-transform:uppercase}
+  h1{font-family:var(--mono);font-weight:700;font-size:clamp(1.8rem,5vw,2.6rem);letter-spacing:.04em;margin:.4rem 0}
+  .sub{color:var(--silk-dim);font-size:.95rem}
+  .legend{display:flex;gap:1.3rem;justify-content:center;margin-top:.9rem;font-family:var(--mono);font-size:.74rem;color:var(--silk-dim)}
+  .legend span{display:inline-flex;align-items:center;gap:.45rem}
+  .ldot{width:9px;height:9px;border-radius:50%;border:2px solid var(--copper);background:var(--bg)}
+
+  .map-scroll{overflow-x:auto;border-radius:16px}
+  .map{
+    position:relative;
+    width:100%;min-width:560px;
+    aspect-ratio:1000/640;
+    background:var(--board);
+    border:1px solid var(--edge);
+    border-radius:16px;
+    overflow:hidden;
+    background-image:
+      radial-gradient(125% 125% at 50% 42%, transparent 50%, rgba(0,0,0,.55)),
+      radial-gradient(circle, rgba(111,128,121,.10) 1px, transparent 1.4px);
+    background-size:100% 100%, 26px 26px;
+  }
+  .map > svg{position:absolute;inset:0;width:100%;height:100%}
+  .map > svg.compass{position:absolute;inset:16px 16px auto auto;width:62px;height:62px;color:var(--copper);opacity:.5;pointer-events:none}
+  .trace{stroke:var(--copper);stroke-width:1.6;stroke-dasharray:5 6;fill:none;opacity:.5}
+  @media (prefers-reduced-motion:no-preference){
+    .trace{animation:flow 2.8s linear infinite}
+    @keyframes flow{to{stroke-dashoffset:-22}}
+  }
+
+  .node{
+    position:absolute;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;gap:.42rem;
+    background:none;border:none;cursor:pointer;padding:0;color:var(--silk);
+  }
+  .pad{
+    width:42px;height:42px;border-radius:50%;
+    display:grid;place-items:center;color:var(--copper);
+    background:var(--bg);border:2px solid var(--copper);
+    box-shadow:0 0 0 4px rgba(207,139,62,.10);
+    transition:transform .15s, border-color .15s, box-shadow .15s, color .15s;
+  }
+  .pad svg{width:22px;height:22px;display:block}
+  .tag{
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--silk);
+    background:rgba(12,21,19,.8);padding:.1rem .45rem;border-radius:5px;white-space:nowrap;
+  }
+  .node:hover .pad,.node:focus-visible .pad{
+    transform:scale(1.15);border-color:var(--copper-bright);color:var(--copper-bright);box-shadow:0 0 16px rgba(236,174,102,.55);
+  }
+  .node:hover .tag,.node:focus-visible .tag{color:#fff}
+  .node:focus-visible{outline:none}
+  .node:focus-visible .pad{outline:2px solid var(--copper-bright);outline-offset:3px}
+
+  .node.secret .pad{
+    border-color:var(--copper-bright);color:var(--copper-bright);
+    box-shadow:0 0 16px rgba(236,174,102,.55);
+  }
+
+  .node.secret .tag{color:var(--copper-bright);font-weight:700}
+  @media (prefers-reduced-motion:no-preference){
+    .node.secret .pad{animation:treasure 2s ease-in-out infinite}
+    @keyframes treasure{50%{box-shadow:0 0 22px rgba(236,174,102,.95)}}
+  }
+
+  .overlay{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(5,10,9,.72);backdrop-filter:blur(3px);padding:1.2rem;z-index:10;
+  }
+  .overlay.open{display:flex}
+  .card{
+    width:min(560px,100%);max-height:82vh;overflow-y:auto;
+    background:var(--board);border:1px solid var(--copper);border-radius:14px;
+    padding:clamp(1.3rem,4vw,2rem);box-shadow:0 30px 70px -25px rgba(0,0,0,.85);
+  }
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.3rem}
+  .card-head h2{font-family:var(--mono);font-size:1.5rem;color:var(--copper-bright);letter-spacing:.04em}
+  .close{background:none;border:1px solid var(--edge);color:var(--silk-dim);font-family:var(--mono);
+    width:30px;height:30px;border-radius:7px;cursor:pointer;flex:none;font-size:.95rem;line-height:1}
+  .close:hover{border-color:var(--copper);color:#fff}
+  .blurb{color:var(--silk-dim);font-size:.92rem;margin-bottom:1.2rem}
+
+  .cmd{margin-bottom:.7rem;border:1px solid var(--edge);border-radius:9px;overflow:hidden}
+  .cmd-top{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .65rem;background:rgba(0,0,0,.2)}
+  .cmd code{font-family:var(--mono);font-size:.86rem;color:var(--silk);white-space:pre-wrap;word-break:break-word;flex:1}
+  .cmd .desc{font-size:.82rem;color:var(--silk-dim);padding:0 .65rem .55rem}
+  .copy{flex:none;font-family:var(--mono);font-size:.72rem;color:var(--copper-bright);
+    background:none;border:1px solid var(--edge);border-radius:6px;padding:.28rem .55rem;cursor:pointer;transition:.15s}
+  .copy:hover{border-color:var(--copper);color:#fff}
+  .copy.ok{color:var(--ok);border-color:var(--ok)}
+
+  .temple pre{font-family:var(--mono);color:var(--copper-bright);font-size:.9rem;line-height:1.35;text-align:center;margin:.2rem 0 1.2rem;white-space:pre}
+  .temple svg{display:block;width:116px;height:auto;margin:.4rem auto 1.4rem;color:var(--copper-bright);filter:drop-shadow(0 0 10px rgba(236,174,102,.35))}
+  .temple ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+  .temple li{font-family:var(--mono);font-size:.85rem;color:var(--silk);padding-left:1.1rem;position:relative}
+  .temple li::before{content:"\25C6";position:absolute;left:0;color:var(--copper);font-size:.7rem;top:.15rem}
+  .temple .foot{margin-top:1.2rem;color:var(--silk-dim);font-size:.82rem;font-style:italic}
+
+  footer{text-align:center;margin-top:1.4rem}
+  footer a{font-family:var(--mono);font-size:.82rem;color:var(--copper-bright);text-decoration:none;border:1px solid var(--edge);padding:.45rem .85rem;border-radius:8px}
+  footer a:hover{border-color:var(--copper);color:#fff}
+  footer a:focus-visible{outline:2px solid var(--copper-bright);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">people / chavsi</p>
+    <h1>El Mapa del Dev</h1>
+    <p class="sub">Feliz cumple Sabu!!!</p>
+    <p class="sub">Un pequeño recordatorio de la gran creatividad y capacidad que te caracterizan.</p>
+    <div class="legend">
+      <span><i class="ldot"></i> Stacks/ Hitos</span>
+    </div>
+  </header>
+
+  <div class="map-scroll">
+    <div class="map" id="map">
+      <svg id="traces" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <svg class="compass" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="50" cy="50" r="33"/>
+        <path d="M50 50 L68 32 M50 50 L68 68 M50 50 L32 68 M50 50 L32 32" opacity=".4"/>
+        <path d="M50 10 L56 50 L50 90 L44 50 Z"/>
+        <path d="M10 50 L50 44 L90 50 L50 56 Z"/>
+        <path d="M50 10 L56 50 L44 50 Z" fill="currentColor" stroke="none"/>
+        <circle cx="50" cy="50" r="3" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <footer><a href="/">&larr; volver al inicio</a></footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="card" role="dialog" aria-modal="true" aria-labelledby="cardTitle" id="card"></div>
+</div>
+
+<script>
+const NODES = [
+  { id:'git', label:'git', x:135, y:470, kind:'tech',
+    blurb:'Control de versiones — el día a día.',
+    items:[
+      {cmd:'git status', desc:'qué cambió y qué está en stage'},
+      {cmd:'git add .', desc:'preparar todos los cambios'},
+      {cmd:'git commit -m "mensaje"', desc:'confirmar lo preparado'},
+      {cmd:'git pull', desc:'traer cambios del remoto'},
+      {cmd:'git push', desc:'subir tus commits'},
+      {cmd:'git switch -c rama', desc:'crear y cambiar de rama'},
+      {cmd:'git log --oneline', desc:'historial compacto'},
+      {cmd:'git stash\ngit stash pop', desc:'guardar cambios sin commitear y recuperarlos'},
+      {cmd:'git reset --soft HEAD~1', desc:'deshacer último commit, conservar cambios'},
+      {cmd:'git restore --staged .', desc:'sacar del stage sin perder cambios'},
+      {cmd:'git remote -v', desc:'ver los remotos configurados'}
+    ]},
+  { id:'go', label:'go', x:510, y:110, kind:'tech',
+    blurb:'Compilar, correr, testear.',
+    items:[
+      {cmd:'go run .', desc:'correr el paquete de esta carpeta'},
+      {cmd:'go build', desc:'compilar binario'},
+      {cmd:'go test ./...', desc:'correr todos los tests'},
+      {cmd:'go mod init nombre/modulo', desc:'iniciar un módulo'},
+      {cmd:'go mod tidy', desc:'ordenar y limpiar dependencias'},
+      {cmd:'go get paquete', desc:'agregar dependencia'},
+      {cmd:'go fmt ./...', desc:'formatear el código'},
+      {cmd:'go vet ./...', desc:'análisis estático'}
+    ]},
+  { id:'python', label:'python', x:330, y:360, kind:'tech',
+    blurb:'Entornos virtuales y paquetes.',
+    items:[
+      {cmd:'python -m venv .venv', desc:'crear entorno virtual'},
+      {cmd:'.venv\\Scripts\\activate', desc:'activar (Windows)'},
+      {cmd:'source .venv/bin/activate', desc:'activar (Linux/Mac)'},
+      {cmd:'pip install paquete', desc:'instalar una librería'},
+      {cmd:'pip install -r requirements.txt', desc:'instalar desde archivo'},
+      {cmd:'pip freeze > requirements.txt', desc:'congelar versiones'},
+      {cmd:'python -m http.server', desc:'servidor estático rápido'},
+      {cmd:'python script.py', desc:'ejecutar un script'}
+    ]},
+  { id:'lua', label:'lua', x:340, y:150, kind:'tech',
+    blurb:'Ligero, embebible. Comandos + snippets.',
+    items:[
+      {cmd:'lua script.lua', desc:'ejecutar'},
+      {cmd:'luarocks install paquete', desc:'instalar lib'},
+      {cmd:'luarocks list', desc:'ver instaladas'},
+      {cmd:'for k, v in pairs(t) do\n  print(k, v)\nend', desc:'recorrer tabla (clave/valor)'},
+      {cmd:'for i, v in ipairs(t) do\n  print(i, v)\nend', desc:'recorrer array en orden'},
+      {cmd:'local function suma(a, b)\n  return a + b\nend', desc:'definir función'},
+      {cmd:'local mod = require("modulo")', desc:'importar módulo'}
+    ]},
+  { id:'linux', label:'linux', x:150, y:250, kind:'tech',
+    blurb:'Terminal — supervivencia básica.',
+    items:[
+      {cmd:'ls -la', desc:'listar todo con detalles'},
+      {cmd:'cp -r origen destino', desc:'copiar carpeta'},
+      {cmd:'mv origen destino', desc:'mover o renombrar'},
+      {cmd:'rm -rf carpeta', desc:'borrar recursivo (cuidado)'},
+      {cmd:'grep -r "texto" .', desc:'buscar texto en archivos'},
+      {cmd:'find . -name "*.go"', desc:'buscar por nombre'},
+      {cmd:'chmod +x archivo', desc:'hacer ejecutable'},
+      {cmd:'tail -f app.log', desc:'seguir un log en vivo'},
+      {cmd:'ps aux | grep nombre', desc:'buscar un proceso'},
+      {cmd:'kill -9 PID', desc:'matar proceso por PID'},
+      {cmd:'df -h\ndu -sh *', desc:'espacio en disco / por carpeta'},
+      {cmd:'sudo apt update && sudo apt upgrade', desc:'actualizar (Debian/Ubuntu)'}
+    ]},
+  { id:'cloudflare', label:'cloudflare', x:820, y:180, kind:'tech',
+    blurb:'Workers & Pages con wrangler.',
+    items:[
+      {cmd:'npm i -g wrangler', desc:'instalar la CLI'},
+      {cmd:'wrangler login', desc:'autenticar tu cuenta'},
+      {cmd:'wrangler init', desc:'nuevo proyecto'},
+      {cmd:'wrangler dev', desc:'correr local'},
+      {cmd:'wrangler deploy', desc:'desplegar un Worker'},
+      {cmd:'wrangler pages deploy ./dist', desc:'desplegar Pages'},
+      {cmd:'wrangler tail', desc:'logs en vivo'},
+      {cmd:'wrangler secret put NOMBRE', desc:'guardar un secreto'}
+    ]},
+  { id:'flask', label:'flask', x:520, y:470, kind:'tech',
+    blurb:'Micro-framework web (Python).',
+    items:[
+      {cmd:'pip install flask', desc:'instalar'},
+      {cmd:'flask --app app run', desc:'correr el server'},
+      {cmd:'flask --app app run --debug', desc:'con reload y debug'},
+      {cmd:'flask --app app run --port 8000', desc:'cambiar puerto'},
+      {cmd:'flask routes', desc:'listar rutas registradas'},
+      {cmd:'from flask import Flask\napp = Flask(__name__)\n\n@app.route("/")\ndef home():\n    return "Hola"', desc:'app mínima'}
+    ]},
+  { id:'fastapi', label:'fastapi', x:660, y:330, kind:'tech',
+    blurb:'APIs rápidas y tipadas (Python).',
+    items:[
+      {cmd:'pip install "fastapi[standard]"', desc:'instalar todo lo necesario'},
+      {cmd:'fastapi dev main.py', desc:'correr en desarrollo'},
+      {cmd:'uvicorn main:app --reload', desc:'alternativa con uvicorn'},
+      {cmd:'uvicorn main:app --host 0.0.0.0 --port 8000', desc:'producción simple'},
+      {cmd:'from fastapi import FastAPI\napp = FastAPI()\n\n@app.get("/")\ndef home():\n    return {"ok": True}', desc:'app mínima — docs auto en /docs'}
+    ]},
+  { id:'templo', label:'Instance', x:860, y:500, kind:'secret',
+    blurb:'Secreto encontrado. El espíritu del developer.',
+    svg:`<svg viewBox="0 0 128 140" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M26 128 H102"/>
+      <path d="M46 128 L46 42 L53.2 42 L53.2 49 L60.4 49 L60.4 42 L67.6 42 L67.6 49 L74.8 49 L74.8 42 L82 42 L82 128"/>
+      <path d="M64 42 V18"/>
+      <path d="M64 20 L82 24 L64 29 Z" fill="currentColor" stroke="none"/>
+      <path d="M46 96 H82"/>
+      <path d="M58 84 V74 Q58 66 64 66 Q70 66 70 74 V84 Z"/>
+      <path d="M55 128 V112 Q55 103 64 103 Q73 103 73 112 V128"/>
+    </svg>`,
+    verdades:[
+      'Lo hago funcionar así tenga que reescribirlo.',
+      'No hay código que se resista a una sesión de música e hiperfoco.',
+      'El borrador feo de hoy es la producción de mañana.',
+      'Estos docs seguramente los hizo alguien de Google.',
+      'Un commit a la vez se construye cualquier cosa.',
+      'Ningún Stack Overflow te enseñó a celebrar. Eso lo trajiste tú.',
+      'Cada bug que sobreviviste te trajo hasta este mapa.'
+    ],
+    foot:'El stack cambia cada año. La gente con la que codeas, no. Feliz cumpleaños.'
+  }
+];
+
+const EDGES = [
+  ['git','linux'],['git','python'],['linux','python'],
+  ['python','lua'],['python','flask'],['lua','go'],
+  ['lua','fastapi'],['flask','fastapi'],['fastapi','cloudflare'],
+  ['go','cloudflare'],['cloudflare','templo']
+];
+
+const map = document.getElementById('map');
+const svg = document.getElementById('traces');
+const overlay = document.getElementById('overlay');
+const card = document.getElementById('card');
+const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+const ICONS = {
+  git: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.3"/><circle cx="6" cy="18" r="2.3"/><circle cx="18" cy="12" r="2.3"/><path d="M6 8.3v7.4"/><path d="M7.7 7.4 16.3 10.9"/></svg>',
+  go: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/><path d="M2 8.5h3.5"/><path d="M2 15.5h3.5"/></svg>',
+  python: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6.5c-3.2 0-5 1.7-5 3.6 0 1.7 1.5 2.6 3.6 2.6s3.6 1 3.6 2.8-1.9 3.5-5.1 3.5"/><circle cx="15.5" cy="6.3" r="2"/><circle cx="16.2" cy="5.8" r="0.6" fill="currentColor" stroke="none"/><path d="M17.5 6.3h2.2"/></svg>',
+  lua: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16.8 13.5A6 6 0 1 1 10.5 7a4.7 4.7 0 0 0 6.3 6.5z"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none"/></svg>',
+  linux: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-2.5 0-3.9 2.1-3.9 4.6 0 .9.2 1.7.2 2.5C7.1 12.4 6.6 14.8 6.6 16.6 6.6 19.2 9 21 12 21s5.4-1.8 5.4-4.4c0-1.8-.5-4.2-1.7-6 0-.8.2-1.6.2-2.5 0-2.5-1.4-4.6-3.9-4.6z"/><circle cx="10.6" cy="8" r="0.7" fill="currentColor" stroke="none"/><circle cx="13.4" cy="8" r="0.7" fill="currentColor" stroke="none"/><path d="M11 9.5l1 1.3 1-1.3z" fill="currentColor" stroke="none"/><path d="M10 20.6 8.6 22M14 20.6 15.4 22"/></svg>',
+  cloudflare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 18h8.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.5-1.3A3.8 3.8 0 0 0 8 18z"/></svg>',
+  flask: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5"/><path d="M10.5 3v5.6L6 17.4A1.8 1.8 0 0 0 7.6 20.2h8.8a1.8 1.8 0 0 0 1.6-2.8L13.5 8.6V3"/><path d="M8.3 14.2h7.4"/></svg>',
+  fastapi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 6 13h5l-1 8 8-11h-5z"/></svg>',
+  templo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>'
+};
+
+EDGES.forEach(([a, b], i) => {
+  const A = byId[a], B = byId[b];
+  const dx = B.x - A.x, dy = B.y - A.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const bend = (i % 2 ? 1 : -1) * len * 0.15;   // sube el 0.15 para más serpenteo
+  const cx = (A.x + B.x) / 2 + (-dy / len) * bend;
+  const cy = (A.y + B.y) / 2 + (dx / len) * bend;
+  const path = document.createElementNS(SVGNS, 'path');
+  path.setAttribute('d', 'M' + A.x + ' ' + A.y + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + B.x + ' ' + B.y);
+  path.setAttribute('class', 'trace');
+  svg.appendChild(path);
+});
+
+NODES.forEach(n => {
+  const btn = document.createElement('button');
+  btn.className = 'node' + (n.kind === 'secret' ? ' secret' : '');
+  btn.style.left = (n.x / 1000 * 100) + '%';
+  btn.style.top = (n.y / 640 * 100) + '%';
+  btn.setAttribute('aria-label', n.label);
+  btn.innerHTML = '<span class="pad">' + (ICONS[n.id] || '') + '</span><span class="tag">' + n.label + '</span>';
+  btn.addEventListener('click', () => openNode(n.id));
+  map.appendChild(btn);
+  centerIcon(btn.querySelector('.pad svg'));
+});
+
+// Centra el dibujo de cada icono dentro de su viewBox 0 0 24 24,
+// porque algunos trazos no están dibujados en el centro.
+function centerIcon(svg){
+  if (!svg) return;
+  const g = document.createElementNS(SVGNS, 'g');
+  while (svg.firstChild) g.appendChild(svg.firstChild);
+  svg.appendChild(g);
+  const b = g.getBBox();
+  const dx = 12 - (b.x + b.width / 2);
+  const dy = 12 - (b.y + b.height / 2);
+  g.setAttribute('transform', 'translate(' + dx.toFixed(2) + ' ' + dy.toFixed(2) + ')');
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function openNode(id){
+  const n = byId[id];
+  let html = '<div class="card-head"><h2 id="cardTitle">' + n.label + '</h2>' +
+             '<button class="close" id="closeBtn" aria-label="Cerrar">&#10005;</button></div>' +
+             '<p class="blurb">' + n.blurb + '</p>';
+
+  if (n.kind === 'secret'){
+    html += '<div class="temple">' + (n.svg || ('<pre>' + escapeHtml(n.ascii || '') + '</pre>')) + '<ul>' +
+            n.verdades.map(v => '<li>' + escapeHtml(v) + '</li>').join('') +
+            '</ul><p class="foot">' + escapeHtml(n.foot) + '</p></div>';
+  } else {
+    html += n.items.map(it =>
+      '<div class="cmd"><div class="cmd-top"><code>' + escapeHtml(it.cmd) +
+      '</code><button class="copy">copiar</button></div>' +
+      (it.desc ? '<div class="desc">' + it.desc + '</div>' : '') + '</div>'
+    ).join('');
+  }
+
+  card.innerHTML = html;
+  overlay.classList.add('open');
+  document.getElementById('closeBtn').addEventListener('click', close);
+
+  if (n.kind !== 'secret'){
+    card.querySelectorAll('.copy').forEach((b, i) => {
+      b.addEventListener('click', () => copy(n.items[i].cmd, b));
+    });
+  }
+  document.getElementById('closeBtn').focus();
+}
+
+function close(){ overlay.classList.remove('open'); }
+
+overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+async function copy(text, btn){
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const t = document.createElement('textarea');
+    t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.focus(); t.select();
+    try { document.execCommand('copy'); } catch {}
+    document.body.removeChild(t);
+  }
+  const old = btn.textContent;
+  btn.textContent = '\u2713 copiado'; btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = old; btn.classList.remove('ok'); }, 1200);
+}
+</script>
+</body>
+</html>
