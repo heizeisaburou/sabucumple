@@ -109,13 +109,15 @@ func (Module) Endpoint() string {
 }
 
 func (Module) Register(g *echo.Group) {
-	g.GET("/", home)
-	g.GET("", home)
+	g.GET("/", Home)
+	g.GET("", Home)
 	g.GET("/styles.css", serveCSS)
 	g.GET("/assets/:file", serveImage)
 }
 
-func home(c *echo.Context) error {
+// Home renderiza la página principal de saburou. Se reutiliza también
+// como punto de entrada del sitio ("/") en main.go.
+func Home(c *echo.Context) error {
 	active := make([]Person, 0, len(thanks))
 	for _, p := range thanks {
 		if p.Active {

@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
-	"strings"
+	"os"
 
 	"github.com/labstack/echo/v5"
 
@@ -33,22 +32,7 @@ func main() {
     kagliostro.New(),
 	}
 
-	e.GET("/", func(c *echo.Context) error {
-		var html strings.Builder
-
-		html.WriteString(`
-      <h1>Cumple 🎂</h1>
-      <ul>
-    `)
-
-		for _, m := range modules {
-			html.WriteString(`<li><a href="/` + m.Endpoint() + `/">` + m.Endpoint() + `</a></li>`)
-		}
-
-		html.WriteString(`</ul>`)
-
-		return c.HTML(http.StatusOK, html.String())
-	})
+	e.GET("/", saburou.Home)
 
 	for _, m := range modules {
 		g := e.Group("/" + m.Endpoint())
@@ -59,8 +43,13 @@ func main() {
 
 	e.Static("/static", "static")
 
-	fmt.Println("Servidor escuchando en http://localhost:8080")
-	if err := e.Start(":8080"); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("Servidor escuchando en :" + port)
+	if err := e.Start(":" + port); err != nil {
 		log.Fatal(err)
 	}
 }
