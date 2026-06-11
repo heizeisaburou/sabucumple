@@ -51,7 +51,7 @@ var thanks = []Person{
 	{
 		Name:    "Juud",
 		Image:   "juudini.png",
-		Message: "Gracias por esa página japonesa llena de 四字熟語 y ese hecho \"amiga\" japonesa, espero que este año coincidamos y podamos progresar en japonés juntos.",
+		Message: "Gracias por esa página japonesa llena de 四字熟語 y ese hecho audio hecho por mi \"amiga\" japonesa. Espero que este año podamos aprender japonés juntos.",
 		URL:     "https://github.com/Juudini",
 		Active:  true,
 	},
