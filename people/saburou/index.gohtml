@@ -9,35 +9,40 @@
   <body>
     <main>
       <div class="flonne-stage">
-        <img src="/saburou/assets/flonne_blue.png" alt="" />
+        <img class="flonne-blue" src="/saburou/assets/flonne_blue.png" alt="" />
+        <img class="flonne-red" src="/saburou/assets/flonne_red.png" alt="" />
       </div>
+
+      <div class="flonne-slider">
+        <span class="flonne-label flonne-label-top">天使</span>
+        <div class="flonne-range-wrap">
+          <input type="range" id="flonneRange" min="0" max="100" value="0" step="1" />
+        </div>
+        <span class="flonne-label flonne-label-bottom">悪魔</span>
+      </div>
+
+      <section class="flonne-content">
+        <h1>Texto de ejemplo</h1>
+      </section>
     </main>
 
-    <!--   <div class="flonne-slider"> -->
-    <!--     <span class="flonne-label flonne-label-top">天使</span> -->
-    <!--     <div class="flonne-range-wrap"> -->
-    <!--       <input type="range" id="flonneRange" min="0" max="100" value="0" step="1" /> -->
-    <!--     </div> -->
-    <!--     <span class="flonne-label flonne-label-bottom">悪魔</span> -->
-    <!--   </div> -->
-    <!-- </main> -->
     <script>
-      // (function () {
-      //   var flonneRange = document.getElementById("flonneRange");
-      //
-      //   function flonneOpacityHandler() {
-      //     var blue = document.querySelector(".flonne-blue");
-      //     var red = document.querySelector(".flonne-red");
-      //     var red_opacity = flonneRange.value / 100;
-      //     var blue_opacity = (100 - flonneRange.value) / 100;
-      //
-      //     red.style.opacity = red_opacity;
-      //     blue.style.opacity = blue_opacity;
-      //   }
-      //
-      //   flonneRange.addEventListener("input", flonneOpacityHandler);
-      //   flonneOpacityHandler(); // Primera ejecución
-      // })();
+      (function () {
+        var flonneRange = document.getElementById("flonneRange");
+
+        function flonneOpacityHandler() {
+          var blue = document.querySelector(".flonne-blue");
+          var red = document.querySelector(".flonne-red");
+          var red_opacity = flonneRange.value / 100;
+          var blue_opacity = (100 - flonneRange.value) / 100;
+
+          red.style.opacity = red_opacity;
+          blue.style.opacity = blue_opacity;
+        }
+
+        flonneRange.addEventListener("input", flonneOpacityHandler);
+        flonneOpacityHandler(); // Primera ejecución
+      })();
     </script>
   </body>
 </html>
