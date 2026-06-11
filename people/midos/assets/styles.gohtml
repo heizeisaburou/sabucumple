@@ -1,0 +1,146 @@
+{{define "estilos"}}
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #060910;
+    --ink: #e8edf6;
+    --muted: #93a0b4;
+    --rose: #fb7185;
+    --amber: #fde68a;
+    --sky: #7dd3fc;
+    --green: #86efac;
+  }
+  * { box-sizing: border-box; }
+
+  /* Aurora viva: el "latido" del organismo. Tres manchas de color que
+     respiran en loop, CSS puro, cero JS. */
+  body {
+    margin: 0; min-height: 100vh; overflow-x: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink); padding: 3rem 1.2rem; line-height: 1.65;
+    background: var(--bg);
+    position: relative;
+  }
+  body::before {
+    content: ""; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(38% 38% at 18% 22%, rgba(251,113,133,.22), transparent 60%),
+      radial-gradient(42% 42% at 82% 28%, rgba(125,211,252,.18), transparent 60%),
+      radial-gradient(46% 46% at 50% 88%, rgba(167,139,250,.20), transparent 60%);
+    filter: blur(20px);
+    animation: latido 14s ease-in-out infinite alternate;
+  }
+  @keyframes latido {
+    0%   { transform: translate3d(-3%, -2%, 0) scale(1); }
+    50%  { transform: translate3d(3%, 2%, 0) scale(1.08); }
+    100% { transform: translate3d(-2%, 3%, 0) scale(1.02); }
+  }
+
+  /* Card glass con borde de luz que gira (liquid-glass 2026). El borde es
+     un conic-gradient animado detrás de la card recortado por un inset. */
+  .card {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 660px;
+    border-radius: 24px; padding: 2.7rem 2.3rem;
+    background: linear-gradient(180deg, rgba(17,24,39,.82), rgba(10,15,24,.88));
+    box-shadow: 0 40px 90px rgba(0,0,0,.55);
+    backdrop-filter: blur(14px) saturate(1.2);
+    isolation: isolate;
+  }
+  .card::before {
+    content: ""; position: absolute; inset: -1.5px; z-index: -1;
+    border-radius: 25px; padding: 1.5px;
+    background: conic-gradient(from var(--ang, 0deg),
+      var(--rose), var(--amber), var(--sky), var(--rose));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: girar 8s linear infinite;
+    opacity: .7;
+  }
+  @property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+  @keyframes girar { to { --ang: 360deg; } }
+
+  /* Barra terminal: firma de "sistema", no de slide. */
+  .term {
+    display: flex; align-items: center; gap: .55rem; margin-bottom: 1.6rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .82rem;
+    color: var(--muted);
+  }
+  .term .dot3 { display: flex; gap: .35rem; }
+  .term .dot3 i { width: .7rem; height: .7rem; border-radius: 50%; display: inline-block; }
+  .term .r { background: #ff5f57; } .term .y { background: #febc2e; } .term .g { background: #28c840; }
+  .term code { color: var(--sky); background: none; }
+
+  /* Hero: emoji y título en la misma fila, centro vertical compartido —
+     la alineación es estructural, no óptica. */
+  .hero { display: flex; align-items: center; gap: .9rem; margin-bottom: .6rem; }
+  .hero h1 { margin: 0; }
+  .cake { font-size: 2.7rem; line-height: 1; flex: none;
+          filter: drop-shadow(0 8px 18px rgba(0,0,0,.5)); }
+  h1 { margin: 0 0 .25rem; font-size: clamp(1.8rem, 5vw, 2.6rem); letter-spacing: -.02em; }
+  h2 { margin: 2.1rem 0 .6rem; font-size: .78rem; color: var(--sky); font-weight: 700;
+       text-transform: uppercase; letter-spacing: .14em; }
+  .kanji { color: var(--rose); }
+  p { margin: .6rem 0; color: #cbd5e1; }
+  .lead { font-size: 1.12rem; color: #f1f5f9; }
+  .muted { color: var(--muted); font-size: .92rem; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace;
+         background: rgba(148,163,184,.14); padding: .12rem .42rem; border-radius: 6px;
+         font-size: .86em; color: var(--amber); }
+
+  /* Tranvía · rieles · cable — tarjetitas con borde lateral de color */
+  .rail { display: grid; gap: .55rem; margin: 1.1rem 0; }
+  .rail .row { display: grid; grid-template-columns: 7.5rem 1fr; align-items: baseline; gap: 1rem;
+               background: rgba(30,41,59,.5); border-left: 3px solid var(--amber);
+               border-radius: 0 12px 12px 0; padding: .6rem .9rem; }
+  .rail .row:nth-child(2) { border-left-color: var(--sky); }
+  .rail .row:nth-child(3) { border-left-color: var(--rose); }
+  .rail dt { font-weight: 700; color: var(--ink); margin: 0; }
+  .rail dd { margin: 0; color: #cbd5e1; }
+
+  /* Nodos de coherencia con pulso vivo */
+  .nodos { list-style: none; padding: 0; margin: 1.3rem 0; display: grid; gap: .5rem; }
+  .nodos li { display: flex; align-items: center; gap: .75rem;
+              background: rgba(30,41,59,.55); border-radius: 12px; padding: .62rem .95rem;
+              border: 1px solid rgba(148,163,184,.12);
+              font-family: ui-monospace, Menlo, monospace; font-size: .95rem; }
+  .dot { width: .85rem; height: .85rem; border-radius: 50%; flex: none; position: relative; }
+  .ok  { background: var(--green); }
+  .ok::after { content: ""; position: absolute; inset: -4px; border-radius: 50%;
+               border: 2px solid var(--green); opacity: .6; animation: pulso 1.8s ease-out infinite; }
+  .bad { background: var(--rose); box-shadow: 0 0 14px rgba(251,113,133,.7); }
+  @keyframes pulso { 0% { transform: scale(.7); opacity: .7; } 100% { transform: scale(1.6); opacity: 0; } }
+
+  .verdict { margin-top: 1.5rem; font-size: 1.35rem; font-weight: 800; letter-spacing: .03em;
+             font-family: ui-monospace, Menlo, monospace; }
+  .v-ok  { color: var(--green); text-shadow: 0 0 22px rgba(134,239,172,.45); }
+  .v-bad { color: var(--rose); text-shadow: 0 0 22px rgba(251,113,133,.45); }
+
+  .actions { margin-top: 1.9rem; display: flex; gap: .7rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: .72rem 1.4rem; border-radius: 999px;
+    text-decoration: none; font-weight: 650; font-size: .96rem;
+    color: #070b12; background: linear-gradient(135deg, var(--amber), var(--rose));
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 10px 30px rgba(251,113,133,.32);
+  }
+  /* Ghost: borde ≥3:1 contra la card (WCAG 2.2 SC 1.4.11) + fondo sutil
+     para que se lea interactivo, no deshabilitado. */
+  .btn.ghost { color: var(--sky); background: rgba(125,211,252,.08);
+               border: 1.5px solid rgba(125,211,252,.75); box-shadow: none; }
+  .btn.ghost:hover { background: rgba(125,211,252,.16); }
+  /* Chips de query: son URLs tocables — la tipografía mono lo dice. */
+  .btn.qry { font-family: ui-monospace, "SF Mono", Menlo, monospace;
+             font-size: .88rem; padding: .62rem 1.1rem; }
+  .btn:hover { transform: translateY(-2px) scale(1.02); }
+  .foot { margin-top: 2.3rem; padding-top: 1.5rem;
+          border-top: 1px solid rgba(148,163,184,.14); }
+  a.back { color: var(--sky); text-decoration: none; }
+  a.back:hover { text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before, .card::before, .ok::after { animation: none; }
+  }
+</style>
+{{end}}

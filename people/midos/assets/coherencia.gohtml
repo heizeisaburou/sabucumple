@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coherencia — un gate de MidOS en vivo</title>
+{{template "estilos" .}}
+</head>
+<body>
+  <div class="card">
+    <div class="hero">
+      <div class="cake">🚆</div>
+      <h1>Un gate, en vivo</h1>
+    </div>
+    <p class="lead">Esto es, en miniatura, cómo decide un riel de MidOS:
+    <strong>AND de nodos</strong>. Todos verdes → pasa. Uno solo en rojo → no pasa.</p>
+
+    <ul class="nodos">
+      {{range .Nodos}}
+      <li>
+        <span class="dot {{if .OK}}ok{{else}}bad{{end}}"></span>
+        <span>{{.Nombre}}</span>
+      </li>
+      {{end}}
+    </ul>
+
+    <div class="verdict {{if eq .Veredicto "COHERENTE"}}v-ok{{else}}v-bad{{end}}">
+      {{.Veredicto}}
+      {{if .Roto}}<span class="muted">— colapsó en <code>{{.Roto}}</code></span>{{end}}
+    </div>
+
+    <h2>Tocalo vos</h2>
+    <p>Apagá un nodo desde la URL y mirá el veredicto caer al primer rojo:</p>
+    <div class="actions">
+      <a class="btn ghost qry" href="/midos/coherencia?doctrina=false">?doctrina=false</a>
+      <a class="btn ghost qry" href="/midos/coherencia?test=false">?test=false</a>
+      <a class="btn ghost" href="/midos/coherencia">resetear</a>
+    </div>
+    <p class="muted" style="margin-top:1.4rem">Así razona el sustrato: no promedia,
+    corta. Un nodo incoherente y el todo se detiene — antes de hacer daño.</p>
+
+    <div class="foot">
+      <a class="back" href="/midos/">← volver a la zona</a>
+    </div>
+  </div>
+</body>
+</html>
