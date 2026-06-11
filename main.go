@@ -18,6 +18,7 @@ import (
 	"github.com/heizeisaburou/sabucumple/people/savage"
 	"github.com/heizeisaburou/sabucumple/people/ladythekilla"
   "github.com/heizeisaburou/sabucumple/people/kagliostro"
+	"github.com/heizeisaburou/sabucumple/people/nekros1x"
 )
 
 func main() {
