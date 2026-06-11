@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feliz Cumpleaños</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0b14; }
+      #lucas_canvas { display: block; width: 100vw; height: 100vh; }
+    </style>
+    <script type="importmap">
+      {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+          }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="lucas_canvas"></canvas>
+  </body>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+
+    const renderer = new THREE.WebGLRenderer({ canvas: lucas_canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b0b14);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 3.2, 18);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 3, 0);
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.0;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    const key = new THREE.DirectionalLight(0xffffff, 1.4);
+    key.position.set(4, 8, 6);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffe0b0, 0.6);
+    fill.position.set(-5, 3, -4);
+    scene.add(fill);
+
+    const TARGET = 3;
+    new GLTFLoader().load('/savage/assets/scene.gltf', (gltf) => {
+      const cake = gltf.scene;
+      const box = new THREE.Box3().setFromObject(cake);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      const scale = TARGET / Math.max(size.x, size.y, size.z);
+      cake.scale.setScalar(scale);
+      cake.position.set(-center.x * scale, -box.min.y * scale, -center.z * scale);
+      scene.add(cake);
+    });
+
+    new FontLoader().load(
+      'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/droid/droid_sans_regular.typeface.json',
+      (font) => {
+        const text = 'Feliz Cumpleaños';
+        const mat = new THREE.MeshStandardMaterial({ color: 0xff5fa2, metalness: 0.2, roughness: 0.35 });
+        const group = new THREE.Group();
+
+        const R = 4.3;
+        const yBase = 1.6;
+        const startDeg = 150, endDeg = 30;
+        const SIZE = 0.42, SPACE = 0.3, GAP = 0.18;
+
+        const glyphs = [];
+        let total = 0;
+        for (const ch of text) {
+          if (ch === ' ') { glyphs.push({ space: true, w: SPACE }); total += SPACE; continue; }
+          const geo = new TextGeometry(ch, { font, size: SIZE, height: 0.1, curveSegments: 6 });
+          geo.computeBoundingBox();
+          const bb = geo.boundingBox;
+          const w = bb.max.x - bb.min.x;
+          geo.translate(-(bb.min.x + bb.max.x) / 2, 0, 0);
+          glyphs.push({ geo, w });
+          total += w + GAP;
+        }
+
+        let cursor = 0;
+        for (const g of glyphs) {
+          const mid = cursor + g.w / 2;
+          cursor += g.w + (g.space ? 0 : GAP);
+          if (g.space) continue;
+          const aDeg = startDeg + (endDeg - startDeg) * (mid / total);
+          const a = THREE.MathUtils.degToRad(aDeg);
+          const mesh = new THREE.Mesh(g.geo, mat);
+          mesh.position.set(R * Math.cos(a), yBase + R * Math.sin(a), 0);
+          mesh.rotation.z = a - Math.PI / 2; 
+          group.add(mesh);
+        }
+        scene.add(group);
+      }
+    );
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</html>
