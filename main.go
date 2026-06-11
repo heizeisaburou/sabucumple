@@ -15,6 +15,8 @@ import (
 	"github.com/heizeisaburou/sabucumple/people/midos"
 	"github.com/heizeisaburou/sabucumple/people/saburou"
 	"github.com/heizeisaburou/sabucumple/people/savage"
+	"github.com/heizeisaburou/sabucumple/people/ladythekilla"
+
 )
 
 func main() {
@@ -27,6 +29,7 @@ func main() {
 		chavsi.New(),
 		saburou.New(),
 		leinSeab.New(),
+		ladythekilla.New(),
 	}
 
 	e.GET("/", func(c *echo.Context) error {
