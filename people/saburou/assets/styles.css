@@ -1,0 +1,65 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: #111;
+}
+
+.flonne-stage {
+  display: grid;
+  justify-content: center;
+}
+
+.flonne-img {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+}
+
+.flonne-red {
+  opacity: 0;
+  z-index: 2;
+}
+
+.flonne-blue {
+  opacity: 1;
+  z-index: 1;
+}
+
+.flonne-slider {
+  position: fixed;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.flonne-label {
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 14px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.flonne-range-wrap {
+  width: 24px;
+  height: 40vh;
+  position: relative;
+}
+
+#flonneRange {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40vh;
+  height: 24px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  cursor: pointer;
+}

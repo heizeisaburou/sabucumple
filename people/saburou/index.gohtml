@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>三郎サイトだよ</title>
+    <link rel="stylesheet" href="/saburou/styles.css" />
   </head>
   <body>
     <main>
+      <div class="flonne-stage">
+        <img class="flonne-img flonne-blue" src="/saburou/assets/flonne_blue_curr.png" alt="Flonne ángel" />
+        <img class="flonne-img flonne-red" src="/saburou/assets/flonne_red_curr.png" alt="Flonne demonio" />
+      </div>
+
+      <div class="flonne-slider">
+        <span class="flonne-label flonne-label-top">天使</span>
+        <div class="flonne-range-wrap">
+          <input type="range" id="flonneRange" min="0" max="100" value="0" step="1" />
+        </div>
+        <span class="flonne-label flonne-label-bottom">悪魔</span>
+      </div>
     </main>
+    <script>
+      (function () {
+        var flonneRange = document.getElementById("flonneRange");
+
+        function flonneOpacityHandler() {
+          var blue = document.querySelector(".flonne-blue");
+          var red = document.querySelector(".flonne-red");
+          var red_opacity = flonneRange.value / 100;
+          var blue_opacity = (100 - flonneRange.value) / 100;
+
+          red.style.opacity = red_opacity;
+          blue.style.opacity = blue_opacity;
+        }
+
+        flonneRange.addEventListener("input", flonneOpacityHandler);
+        flonneOpacityHandler(); // Primera ejecución
+      })();
+    </script>
   </body>
 </html>
