@@ -53,6 +53,7 @@ var thanks = []Person{
 		Image:   "juudini.png",
 		Message: "Gracias por esa página japonesa llena de 四字熟語 y ese hecho audio hecho por mi \"amiga\" japonesa. Espero que este año podamos aprender japonés juntos.",
 		URL:     "https://github.com/Juudini",
+		Endpoint: "/juudini/",
 		Active:  true,
 	},
 	{
