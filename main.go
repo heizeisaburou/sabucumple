@@ -12,6 +12,7 @@ import (
 	"github.com/heizeisaburou/sabucumple/people/ejemplo"
 	"github.com/heizeisaburou/sabucumple/people/leinSeab"
 	"github.com/heizeisaburou/sabucumple/people/midos"
+	"github.com/heizeisaburou/sabucumple/people/nazads"
 	"github.com/heizeisaburou/sabucumple/people/saburou"
 	"github.com/heizeisaburou/sabucumple/people/savage"
 	"github.com/heizeisaburou/sabucumple/people/ladythekilla"
@@ -24,6 +25,7 @@ func main() {
 	modules := []module.Module{
 		ejemplo.New(),
 		midos.New(),
+		nazads.New(),
 		savage.New(),
 		chavsi.New(),
 		saburou.New(),

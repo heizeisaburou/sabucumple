@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nazads — cumple 三郎</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    min-height:100vh;background:#080708;
+    color:#eee;display:flex;align-items:center;justify-content:center;padding:1rem;
+    font-family:"Cascadia Code","JetBrains Mono","Fira Code","DejaVu Sans Mono",monospace;
+  }
+  .term{
+    max-width:960px;width:100%;
+    background:#080708;border:1px solid #1a1a1a;border-radius:8px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;
+  }
+
+  /* ── top bar ── */
+  .term-bar{
+    background:#0d0a0d;padding:10px 16px;border-bottom:1px solid #1a1a1a;
+    display:flex;align-items:center;gap:10px;user-select:none;
+  }
+  .term-dot{width:12px;height:12px;border-radius:50%;display:inline-block;transition:opacity .15s}
+  .term-dot.r{background:#ff5f56}
+  .term-dot.y{background:#ffbd2e}
+  .term-dot.g{background:#27c93f}
+  .term-title{
+    flex:1;text-align:center;font-size:0.8rem;color:#555;
+    letter-spacing:.3px;
+  }
+
+  /* ── body ── */
+  .term-body{padding:1.5rem 1.2rem}
+  .columns{display:flex;gap:1.5rem}
+  .col-left{flex:0 0 58%;min-width:0}
+  .col-right{flex:1;min-width:0}
+
+  /* ── left column (images) ── */
+  .term-screen{
+    background:#050405;border:1px solid #181818;border-radius:6px;
+    overflow:hidden;display:flex;flex-direction:column;
+  }
+  .term-screen .prompt-line{
+    padding:10px 14px 6px;font-size:0.75rem;color:#555;
+    border-bottom:1px solid #141414;
+  }
+  .term-screen .prompt-line .user{color:#B1E105}
+  .term-screen .prompt-line .path{color:#777}
+  .term-screen .prompt-line .cmd{color:#DB0907}
+  .term-screen .prompt-line .cursor{
+    display:inline-block;width:7px;height:14px;background:#B1E105;
+    vertical-align:text-bottom;animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  .img-stage{
+    position:relative;width:100%;
+    aspect-ratio:4/3;overflow:hidden;
+    background:#080708;
+  }
+  .img-stage img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:contain;opacity:0;
+    transition:opacity 2s ease-in-out;
+  }
+  .img-stage img.active{opacity:1}
+
+  /* ── right column (info) ── */
+  .hero-icon{width:48px;height:48px;border-radius:50%;margin-bottom:.5rem;border:1px solid #1a1a1a;display:block;object-fit:cover}
+  .hero-title{
+    font-size:1.5rem;font-weight:700;letter-spacing:-.5px;
+    color:#B1E105;line-height:1.1;margin-bottom:.3rem;
+    white-space:nowrap;
+  }
+  .hero-sub{
+    font-size:0.75rem;color:#DB0907;margin-bottom:.6rem;
+    letter-spacing:.5px;white-space:nowrap;
+  }
+  .hero-desc{
+    font-size:0.78rem;color:#999;line-height:1.6;margin-bottom:1.2rem;
+  }
+  .hero-desc .accent1{color:#B1E105}
+  .hero-desc .accent2{color:#DB0907}
+
+  /* ── buttons ── */
+  .btn-group{display:flex;gap:4px}
+  .btn{
+    font-family:inherit;font-size:0.75rem;
+    padding:6px 14px;border:1px solid #1a1a1a;
+    background:#0d0a0d;color:#888;cursor:pointer;
+    transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+    border-radius:4px;
+  }
+  .btn:hover{background:#141014;border-color:#333;color:#ccc}
+  .btn.primary{border-color:#3a4a1a;color:#B1E105}
+  .btn.primary:hover{background:#1a1a0a;border-color:#5a7a2a}
+  .btn.danger{border-color:#4a1a1a;color:#DB0907}
+  .btn.danger:hover{background:#1a0a0a;border-color:#6a2a2a}
+
+  /* ── footer ── */
+  .footer-line{
+    border-top:1px solid #1a1a1a;padding:8px 16px;
+    font-size:0.7rem;color:#444;
+    display:flex;justify-content:space-between;
+  }
+  .footer-line a{color:#555;text-decoration:none}
+  .footer-line a:hover{color:#B1E105}
+
+  /* ── chat ── */
+  .chat-box{
+    border-top:1px solid #141414;padding:1rem 1.2rem .5rem;
+  }
+  .chat-history{
+    max-height:220px;overflow-y:auto;margin-bottom:.5rem;
+    font-size:0.72rem;line-height:1.5;scrollbar-width:thin;scrollbar-color:#1a1a1a transparent;
+  }
+  .chat-msg{margin-bottom:4px;word-break:break-word}
+  .chat-msg .prompt{color:#B1E105}
+  .chat-msg .response{color:#ccc}
+  .chat-msg .err{color:#DB0907}
+  .chat-line{
+    display:flex;align-items:center;gap:6px;font-size:0.72rem;
+  }
+  .chat-line .prompt{color:#B1E105;white-space:nowrap;user-select:none}
+  .chat-line input{
+    flex:1;background:transparent;border:none;color:#eee;
+    font-family:inherit;font-size:0.72rem;outline:none;
+    caret-color:#B1E105;
+  }
+  .chat-line input::placeholder{color:#333}
+  .wiki-link{color:#DB0907;text-decoration:none;font-size:0.78rem}
+  .wiki-link:hover{color:#B1E105}
+
+  /* ── mobile ── */
+  @media(max-width:640px){
+    .columns{flex-direction:column}
+    .col-left,.col-right{flex:none;width:100%}
+    .term-body{padding:1rem .6rem}
+    .hero-title{font-size:1.8rem;white-space:normal}
+    .hero-sub{white-space:normal}
+    .btn-group{flex-wrap:wrap}
+    .col-left{margin-bottom:.6rem}
+  }
+
+  /* ── hidden yt ── */
+  #yt-box{position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="term-bar">
+    <span class="term-dot r"></span>
+    <span class="term-dot y"></span>
+    <span class="term-dot g"></span>
+    <span class="term-title">nazads@cumple:~/flonne</span>
+  </div>
+
+  <div class="term-body">
+    <div class="columns">
+      <!-- left: images -->
+      <div class="col-left">
+        <div class="term-screen">
+          <div class="prompt-line">
+            <span class="user">nazads</span>@<span class="path">cumple</span>:<span class="path">~</span>$ ./flonne <span class="cmd">--preview</span>
+            <span class="cursor"></span>
+          </div>
+          <div class="img-stage">
+            <img id="img1" class="active" src="fionne1.png" alt="Flonne 1">
+            <img id="img2" src="fionne2.png" alt="Flonne 2">
+          </div>
+        </div>
+      </div>
+
+      <!-- right: info -->
+      <div class="col-right">
+        <img class="hero-icon" src="https://avatars.githubusercontent.com/heizeisaburou" alt="heizeisaburou">
+        <div class="hero-title">Feliz Cumple SABU!</div>
+        <div class="hero-sub">Flonne — Disgaea ★ personaje amado por sabu</div>
+        <div class="hero-desc">
+          Flonne es un personaje de Disgaea: Hour of Darkness.
+          Es un ángel conocido como una "fanática del amor" que
+          habla constantemente sobre el amor y cree en su poder
+          más que nadie. Cuando era aprendiz de ángel, fue enviada
+          a una misión al Inframundo de Laharl y decidió quedarse
+          allí un tiempo para conocer mejor a los demonios.
+          Debido a diversos acontecimientos, termina convertida
+          en un <span class="accent1">ángel caído</span>,
+          que es como aparece en la mayoría de los juegos.
+          <br><br>
+          <a class="wiki-link" href="https://disgaea.fandom.com/wiki/Flonne" target="_blank" rel="noopener">📖 leer wiki →</a>
+        </div>
+        <div class="btn-group">
+          <button class="btn primary" id="btnPause">⏸ pause</button>
+          <button class="btn" id="btnPrev">⏮</button>
+          <button class="btn" id="btnNext">⏭</button>
+          <button class="btn" id="btnShuffle">🔀 shuffle</button>
+          <button class="btn danger" id="btnYt">🔗 yt</button>
+          <a class="btn" href="/">← back</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- chat row -->
+    <div class="chat-box">
+      <div class="chat-history" id="chatHistory"></div>
+      <div class="chat-line">
+        <span class="prompt">nazads@cumple:~$</span>
+        <input type="text" id="chatInput" placeholder="ask about flonne…" autofocus>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-line">
+    <span>nazads v2.0 | flonne.dance</span>
+    <span>para 三郎 ✿</span>
+  </div>
+</div>
+
+<div id="yt-box"></div>
+
+<script>
+// ── image cross-fade ──
+let imgToggle = false;
+setInterval(() => {
+  imgToggle = !imgToggle;
+  document.getElementById('img1').className = imgToggle ? '' : 'active';
+  document.getElementById('img2').className = imgToggle ? 'active' : '';
+}, 5000);
+
+// ── YouTube player ──
+const PLAYLIST = [
+  { t:"Koi wa Chaos no Shimobe Nari", a:"Ushirokara Haiyoritai G", v:"sSN131exLCU" },
+  { t:"Taiyou Iwaku Moeyo Chaos", a:"Ushirokara Haiyoritai G", v:"0y13j5JfKlQ" },
+  { t:"Blast of Fate ~Hayate no Yukue~", a:"Ushirokara Haiyoritai B", v:"yHN322m8ZOY" },
+  { t:"Haiyore Once Nyagain", a:"Ushirokara Haiyoritai G", v:"eqQrGwavY7M" },
+];
+let pidx = 0, player = null, shuffle = false;
+
+function loadYT(){
+  let s = document.createElement('script');
+  s.src = "https://www.youtube.com/iframe_api";
+  document.getElementById('yt-box').appendChild(s);
+}
+function onYouTubeIframeAPIReady(){
+  player = new YT.Player('yt-box',{
+    height:'1',width:'1',videoId:PLAYLIST[0].v,
+    playerVars:{autoplay:1,controls:0,disablekb:1,fs:0,modestbranding:1,rel:0,iv_load_policy:3,loop:0},
+    events:{onReady:e=>e.target.playVideo(),onStateChange:e=>{if(e.data===YT.PlayerState.ENDED)next()}}
+  });
+}
+function updateNow(){
+  let s = PLAYLIST[pidx%PLAYLIST.length];
+  document.getElementById('songTitle') && (document.getElementById('songTitle').textContent = s.t);
+}
+function play(idx){
+  pidx = idx%PLAYLIST.length;
+  let s = PLAYLIST[pidx];
+  if(player&&player.loadVideoById){player.loadVideoById(s.v);player.playVideo();}
+  updateNow();
+}
+function getNextIdx(dir){
+  if(shuffle){
+    let n;
+    do{n=Math.floor(Math.random()*PLAYLIST.length)}while(n===pidx);
+    return n;
+  }
+  return (pidx+dir+PLAYLIST.length)%PLAYLIST.length;
+}
+function next(){play(getNextIdx(1))}
+function prev(){play(getNextIdx(-1))}
+function toggleP(){
+  if(!player) return;
+  let b = document.getElementById('btnPause');
+  if(player.getPlayerState()===1){player.pauseVideo();b.textContent='▶ play'}
+  else{player.playVideo();b.textContent='⏸ pause'}
+}
+function toggleShuffle(){
+  shuffle=!shuffle;
+  document.getElementById('btnShuffle').style.color=shuffle?'#B1E105':'';
+}
+loadYT();
+document.getElementById('btnPause').addEventListener('click',toggleP);
+document.getElementById('btnNext').addEventListener('click',next);
+document.getElementById('btnPrev').addEventListener('click',prev);
+document.getElementById('btnShuffle').addEventListener('click',toggleShuffle);
+document.getElementById('btnYt').addEventListener('click',()=>{
+  let s=PLAYLIST[pidx%PLAYLIST.length];
+  window.open('https://youtube.com/watch?v='+s.v,'_blank');
+});
+
+// ── Flonne chat (knowledge base) ──
+const LORE = [
+  // identity
+  {k:["who","flonne","angel","is","character","identity"],
+   a:"Flonne is an angel-in-training from the Netherworld. She first appeared in Disgaea: Hour of Darkness (2003) alongside Laharl and Etna."},
+  {k:["name","meaning"],
+   a:"Her name comes from the French word 'fleur' (flower), fitting her love-and-beauty theme."},
+  {k:["species","race","type","what"],
+   a:"She is an angel-in-training — a celestial being sent to the Netherworld to complete her training. Not a demon, despite living there."},
+
+  // story
+  {k:["role","story","plot","disgaea","hour of darkness","d1"],
+   a:"Flonne was sent to assassinate King Krichevskoy, but ended up befriending Laharl and helping him reclaim his throne. She's the heart of the party."},
+  {k:["laharl","relationship","love","crush","feelings","romance"],
+   a:"She cares deeply for Laharl and constantly tries to teach him about love. There's clear romantic tension between them, though Laharl would never admit it."},
+  {k:["etna","relationship","rival","friends"],
+   a:"Flonne and Etna have a friendly rivalry. Etna teases her about her naivety, but they deeply respect each other."},
+
+  // abilities
+  {k:["powers","abilities","magic","skills","moves","attacks","learn"],
+   a:"Her signature attack is 'Love Divine Justice' (also called 'Heavenly Arrows') — a rain of light arrows. She also excels at healing magic and star-element spells."},
+  {k:["love divine justice","heavenly arrows","special","ultimate"],
+   a:"Love Divine Justice / Heavenly Arrows summons a massive volley of light arrows from the sky, striking enemies with the power of love."},
+  {k:["prinny","prinnies","squad","train"],
+   a:"Flonne famously commands a squad of prinnies with kindness and affection, unlike most demons who treat them as disposable."},
+
+  // forms
+  {k:["angel","form","angel form","halo","default"],
+   a:"Her angel form has a halo above her head and white wings. It's her default state, representing her pure heart."},
+  {k:["demon","fallen flonne","flonne ii","horns","evil","dark"],
+   a:"Fallen Flonne (Flonne II) is her demon form with dark horns and purple wings. It represents embracing the Netherworld's chaos while keeping her heart pure."},
+  {k:["transform","change","switch","angel demon","toggle"],
+   a:"She can switch between angel and demon forms at will. The transformation reflects her dual nature — love and chaos in one."},
+
+  // personality
+  {k:["personality","like","trait","naive","cheerful"],
+   a:"Flonne is cheerful, optimistic, and believes deeply in the power of love. She's naive about the Netherworld but makes up for it with pure-hearted enthusiasm."},
+  {k:["love","believe","power of love"],
+   a:"Her defining trait is her unwavering belief that love conquers everything, even in the darkest corners of the Netherworld."},
+  {k:["funny","comedy","humor","explosion","chaos","explode"],
+   a:"She's famous for her fascination with explosions and her overly enthusiastic approach to love and chaos. She often misunderstands demon customs in adorable ways."},
+
+  // appearances
+  {k:["games","appearances","disgaea","series","cameo","which"],
+   a:"Flonne appears in Disgaea: Hour of Darkness, Disgaea D2, Disgaea RPG, and crossovers like Soul Nomad and Phantom Brave."},
+  {k:["disgaea d2","dd2","sequel"],
+   a:"In Disgaea D2 (the direct sequel to D1), Flonne continues her adventures with Laharl and Etna, with deeper exploration of her character."},
+  {k:["crossover","other","guest","nisa","nippon ichi"],
+   a:"She appears in several Nippon Ichi crossovers including Soul Nomad, Phantom Brave, and Prinny: Can I Really Be the Hero?"},
+
+  // trivia
+  {k:["voice","actor","seiyuu","japanese","english","va"],
+   a:"Japanese: Yurika Hino. English: Amanda Winn-Lee (original Disgaea), Julie Rei Goldstein (later appearances)."},
+  {k:["design","creator","artist","looks","harada"],
+   a:"Designed by Takehito Harada. Her look features long pink twintails, a white-pink outfit with heart motifs, and angel wings."},
+  {k:["popular","fan","favorite","popularity"],
+   a:"Flonne consistently ranks as one of the most popular Disgaea characters. Her cheerful personality and iconic design make her a fan favorite."},
+  {k:["quote","says","famous","line","say"],
+   a:"'I believe in love! Love can save the world!' She also frequently waxes poetic about love and chaos in equal measure."},
+  {k:["theme","song","music","opening"],
+   a:"Her associated songs include 'Koi wa Chaos no Shimobe Nari' and 'Taiyou Iwaku Moeyo Chaos' by Ushirokara Haiyoritai G."},
+  {k:["age","old","height"],
+   a:"Flonne's exact age isn't specified, which is common in Disgaea's timeless fantasy setting."},
+
+  // fallback (all other queries)
+  {k:[], a:"I only know about Flonne from Disgaea, dood! Ask me about who she is, her powers, her relationships, or her angel and demon forms."},
+];
+
+const STOP = new Set(["the","a","an","is","are","was","were","do","does","did","to","of","in","on","at","for","with","by","from","as","be","it","its","this","that","and","or","but","not","no","so","if","my","me","we","he","she","her","him","his","they","them","tell","about","what","how","can","you","i","we","all","has","have","been","will","would","could"]);
+
+function ask(q){
+  const words = q.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>1&&!STOP.has(w));
+  if(!words.length){showMsg('err',"Say something about Flonne, dood!");return}
+  let best = {idx:LORE.length-1,score:0};
+  for(let i=0;i<LORE.length-1;i++){
+    const score = LORE[i].k.filter(kw => words.some(w=>kw.includes(w))).length;
+    if(score>best.score){best={idx:i,score}}
+  }
+  showMsg('response',LORE[best.idx].a);
+}
+
+function showMsg(type,text){
+  const h=document.getElementById('chatHistory');
+  const m=document.createElement('div');m.className='chat-msg';
+  if(type==='user') m.innerHTML='<span class="prompt">nazads@cumple:~$</span> <span class="response">'+text+'</span>';
+  else if(type==='err') m.innerHTML='<span class="err">⚠ '+text+'</span>';
+  else m.innerHTML='<span class="response">'+text+'</span>';
+  h.appendChild(m);h.scrollTop=h.scrollHeight;
+}
+
+document.getElementById('chatInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&this.value.trim()){
+    showMsg('user',this.value.trim());
+    ask(this.value.trim());
+    this.value='';
+  }
+});
+</script>
+</body>
+</html>
