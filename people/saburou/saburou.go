@@ -99,7 +99,7 @@ var thanks = []Person{
 	{
 		Name:     "nekros1x",
 		Image:    "nekros1x.png",
-		Message:  "...",
+		Message:  "Gracias esa amabilidad nativa que tienes como persona, por el jueguito y por los años que nos esperan de amistad. Nos vemos por argentina cuándo vaya a visitar a Kagliostro y a los demás!",
 		URL:      "https://github.com/nekros1xx/",
 		Endpoint: "/nekros1x/",
 		Active:   true,
