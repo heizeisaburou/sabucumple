@@ -34,6 +34,7 @@ func main() {
 		saburou.New(),
 		leinSeab.New(),
 		ladythekilla.New(),
+		nekros1x.New(),
     kagliostro.New(),
 	}
 
