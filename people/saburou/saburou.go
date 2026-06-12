@@ -97,6 +97,14 @@ var thanks = []Person{
 		Active:   true,
 	},
 	{
+		Name:     "nekros1x",
+		Image:    "nekros1x.png",
+		Message:  "...",
+		URL:      "https://github.com/nekros1xx/",
+		Endpoint: "/nekros1x/",
+		Active:   true,
+	},
+	{
 		Name:     "Saburou",
 		Image:    "saburou.png",
 		Message:  "¡Para que tengamos muchos más eventos como este!",

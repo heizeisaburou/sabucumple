@@ -1,4 +1,4 @@
-package main
+package nekros1x
 
 import (
 	"log"
